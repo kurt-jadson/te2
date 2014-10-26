@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author kurt
  */
-@WebServlet(name = "DecodeErrorController", urlPatterns = {"/DecodeErrorController"})
+@WebServlet(urlPatterns = {"/DecodeErrorController"})
 public class DecodeErrorController extends HttpServlet {
 
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)

@@ -15,27 +15,35 @@ import pf.framework.controller.AbstractController;
 @WebServlet(urlPatterns = {"/HomeController"})
 public class HomeController extends AbstractController {
 
+	@Override
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		setRequest(request);
-		setResponse(response);
+		setRequestResponse(request, response);
 		
-		System.out.println("Action: " + getAction());
-		if(getAction().equals("listar")) {
-			System.out.println("Redirecionando para listar ...");
-			request.getRequestDispatcher("/listar.jsp").forward(request, response);
-		} else {
-			try (PrintWriter out = response.getWriter()) {
-				out.println("<!DOCTYPE html>");
-				out.println("<html>");
-				out.println("<head>");
-				out.println("<title>Application</title>");			
-				out.println("</head>");
-				out.println("<body>");
-				out.println("<h1>Bem vindo ao projeto!</h1>");
-				out.println("</body>");
-				out.println("</html>");
-			}
+		switch(getAction()) {
+			case "listar":
+				listar();
+				break;
+			default:
+				defaultAction();
+		}
+	}
+
+	private void listar() throws ServletException, IOException {
+		getRequest().getRequestDispatcher("/listar.jsp").forward(getRequest(), getResponse());
+	}
+
+	private void defaultAction() throws IOException {
+		try (PrintWriter out = getResponse().getWriter()) {
+			out.println("<!DOCTYPE html>");
+			out.println("<html>");
+			out.println("<head>");
+			out.println("<title>Application</title>");
+			out.println("</head>");
+			out.println("<body>");
+			out.println("<h1>Bem vindo ao projeto!</h1>");
+			out.println("</body>");
+			out.println("</html>");
 		}
 	}
 

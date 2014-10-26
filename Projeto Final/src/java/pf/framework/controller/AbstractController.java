@@ -25,16 +25,13 @@ public abstract class AbstractController extends HttpServlet {
 		return request;
 	}
 
-	public void setRequest(HttpServletRequest request) {
+	public void setRequestResponse(HttpServletRequest request, HttpServletResponse response) {
 		this.request = request;
+		this.response = response;		
 	}
 
 	public HttpServletResponse getResponse() {
 		return response;
-	}
-
-	public void setResponse(HttpServletResponse response) {
-		this.response = response;
 	}
 	
 	public URIContext getURIContext() {

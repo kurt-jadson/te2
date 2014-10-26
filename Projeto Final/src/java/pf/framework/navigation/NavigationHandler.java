@@ -39,7 +39,7 @@ public class NavigationHandler {
 			readRoutes();
 		} catch (ParserConfigurationException | SAXException | IOException ex) {
 			String mensagem = "Configuração de rotas não foi possível de ser interpretada.";
-			logger.log(Level.CONFIG, mensagem, ex);
+			logger.log(Level.SEVERE, mensagem, ex);
 			throw new Exception(mensagem);
 		}
 	}
@@ -69,7 +69,12 @@ public class NavigationHandler {
 			Element routeNode = (Element) nodeList.item(i);
 			Node from = routeNode.getElementsByTagName("from").item(0);
 			Node to = routeNode.getElementsByTagName("to").item(0);
-			Route route = new Route(from.getFirstChild().getNodeValue(), to.getFirstChild().getNodeValue());
+			
+			String caseSensitive = routeNode.getAttribute("case-sensitive");
+			boolean ignoreCase = !caseSensitive.equals("") && !Boolean.parseBoolean(caseSensitive);
+			String fromStr = from.getFirstChild().getNodeValue();
+			String toStr = to.getFirstChild().getNodeValue();
+			Route route = new Route(fromStr, toStr, ignoreCase);
 			routes.add(route);
 		}
 	}
@@ -83,7 +88,17 @@ public class NavigationHandler {
 		for (int i = 0, j = paths.length; i < j; i++) {
 			String outcomeString = getOutcomeString(i, paths);
 			for (int k = 0, l = routes.size(); k < l; k++) {
-				if (routes.get(k).getFrom().equals(outcomeString)) {
+				Route route = routes.get(k);
+				String from = route.getFrom();
+				String outcome = outcomeString;
+				
+				System.out.println("ig: " + route.isIgnoreCase());
+				if(route.isIgnoreCase()) {
+					from = from.toUpperCase();
+					outcome = outcome.toUpperCase();
+				}
+				
+				if (from.equals(outcome)) {
 					controller = k + 1;
 					action = i + 1;
 					break;
@@ -128,6 +143,10 @@ public class NavigationHandler {
 		}
 
 		return outcomeString.toString();
+	}
+
+	public String getDefaultRoute() {
+		return defaultRoute;
 	}
 
 }

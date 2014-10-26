@@ -2,9 +2,9 @@ package pf.framework.filter;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Map.Entry;
 import java.util.Objects;
-import static javax.management.Query.value;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -25,6 +25,7 @@ import pf.framework.navigation.URIContext;
  */
 public class Router implements Filter {
 
+	private static final Logger logger = Logger.getLogger(Router.class.getName());
 	private NavigationHandler navigationHandler;
 	
 	@Override
@@ -67,15 +68,14 @@ public class Router implements Filter {
 
 	private void dispatchToErrorPage(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			dispatchTo("/DecodeErrorController", request, response);
+			dispatchTo(navigationHandler.getDefaultRoute(), request, response);
 		} catch (Exception ex) {
-			//Simplesmente loga, não há mais o que fazer
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 		}
 	}
 
 	private void dispatchTo(String outcome, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		RequestDispatcher dispatcher = request.getRequestDispatcher(outcome);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/" + outcome);
 		dispatcher.forward(request, response);
 	}
 

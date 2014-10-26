@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>${parameters['aluno']}</h1>
+		<h1>Aluno: ${parameters['aluno']}</h1>
     </body>
 </html>
