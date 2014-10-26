@@ -4,6 +4,7 @@
     Author     : kurt
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,9 @@
         <title>JSP Page</title>
     </head>
     <body>
-		<h1>Aluno: ${parameters['aluno']}</h1>
+		<h1>Atividades</h1>
+		<c:forEach items="${atividades}" var="atividadeVar">
+			<p>${atividadeVar.descricao}</p>
+		</c:forEach>
     </body>
 </html>

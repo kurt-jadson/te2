@@ -1,12 +1,14 @@
 package pf.framework.web;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import pf.framework.exception.UnforwardException;
+import pf.framework.exception.UnredirectException;
 
 /**
  *
@@ -54,6 +56,21 @@ public class WebContext {
 		request.setAttribute(name, attribute);
 	}
 	
+	public Integer getParameterInteger(String name) {
+		String param = getParameter(name);
+		return (param == null ? null : Integer.valueOf(param));
+	}
+	
+	public Long getParameterLong(String name) {
+		String param = getParameter(name);
+		return (param == null ? null : Long.valueOf(param));
+	}
+	
+	public BigDecimal getParameterBigDecimal(String name) {
+		String param = getParameter(name);
+		return (param == null ? null : BigDecimal.valueOf(Double.valueOf(param)));
+	}
+	
 	public String getParameter(String name) {
 		return parameters.get(name);
 	}
@@ -74,12 +91,32 @@ public class WebContext {
 		
 		return requestString.toString();
 	}
+
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+
+	public HttpServletResponse getResponse() {
+		return response;
+	}
 	
 	public void forwardTo(String outcome) throws UnforwardException {
 		try {
 			request.getRequestDispatcher(outcome).forward(request, response);
 		} catch(ServletException | IOException ex) {
 			throw new UnforwardException(outcome, ex);
+		}
+	}
+	
+	public void redirectTo(WebContext webContext, String outcome) throws UnredirectException {
+		try {
+			if(outcome.charAt(0) == '/') {
+				response.sendRedirect("/" + webContext.getApplicationContext() + outcome);
+			} else {
+				response.sendRedirect(outcome);
+			}
+		} catch (IOException ex) {
+			throw new UnredirectException(outcome, ex);
 		}
 	}
 	
