@@ -67,15 +67,18 @@ public class URLHandler {
 		NodeList nodeList = document.getElementsByTagName("route");
 		for (int i = 0, j = nodeList.getLength(); i < j; i++) {
 			Element routeNode = (Element) nodeList.item(i);
-			Node from = routeNode.getElementsByTagName("from").item(0);
+			NodeList from = routeNode.getElementsByTagName("from");
 			Node to = routeNode.getElementsByTagName("to").item(0);
 			
 			String caseSensitive = routeNode.getAttribute("case-sensitive");
 			boolean ignoreCase = !caseSensitive.equals("") && !Boolean.parseBoolean(caseSensitive);
-			String fromStr = from.getFirstChild().getNodeValue();
-			String toStr = to.getFirstChild().getNodeValue();
-			Route route = new Route(fromStr, toStr, ignoreCase);
-			routes.add(route);
+			
+			for(int k = 0, l = from.getLength(); k < l; k++) {
+				String fromStr = from.item(k).getFirstChild().getNodeValue();
+				String toStr = to.getFirstChild().getNodeValue();
+				Route route = new Route(fromStr, toStr, ignoreCase);
+				routes.add(route);
+			}
 		}
 	}
 
