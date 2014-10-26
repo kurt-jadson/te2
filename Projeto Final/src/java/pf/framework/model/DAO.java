@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DAO {
 
-	private StringBuilder sql;
+	private final StringBuilder sql;
 	private boolean insert;
 	private Field[] fields;
 	private Object[] values;
@@ -138,8 +138,13 @@ public class DAO {
 			return ps.execute();
 		}
 	}
+	
+	public <T> T getSingleResult(Connection connection, Class<T> type) throws Exception {
+		List<T> entities = getResult(connection, type);
+		return entities.isEmpty() ? null : entities.get(0);
+	}
 
-	public ResultSet getResult(Connection connection) throws Exception {
+	public <T> List<T> getResult(Connection connection, Class<T> type) throws Exception {
 		String sqlStr = sql.toString();
 		StringBuilder projection = new StringBuilder();
 
@@ -154,9 +159,40 @@ public class DAO {
 			for (int i = 0, j = fieldConditions.size(); i < j; i++) {
 				FieldType.set(fieldConditions.get(i).type, valueConditions.get(i), i + 1, ps);
 			}
-			
-			return ps.executeQuery();
+
+			ResultSet rs = ps.executeQuery();
+			return organize(type, rs);
 		}
+	}
+
+	private <T> List<T> organize(Class<T> type, ResultSet rs) throws Exception {
+		List<T> list = new ArrayList<>();
+		java.lang.reflect.Field[] dfields = type.getDeclaredFields();
+		
+		while (rs.next()) {
+			T entity = type.newInstance();
+			for(int i = 0, j = fields.length; i < j; i++) {
+				Field field = fields[i];
+				java.lang.reflect.Field rf = getFieldIgnoreCase(field, dfields);
+				rf.setAccessible(true);
+				rf.set(entity, rs.getObject(i + 1));
+				rf.setAccessible(false);
+			}
+			
+			list.add(entity);
+		}
+		
+		return list;
+	}
+	
+	private java.lang.reflect.Field getFieldIgnoreCase(Field field, java.lang.reflect.Field[] fields) {
+		for(java.lang.reflect.Field f : fields) {
+			if(field.name.equalsIgnoreCase(f.getName())) {
+				return f;
+			}
+		}
+		
+		return null;
 	}
 
 }

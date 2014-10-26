@@ -14,8 +14,23 @@
     </head>
     <body>
 		<h1>Atividades</h1>
-		<c:forEach items="${atividades}" var="atividadeVar">
-			<p>${atividadeVar.descricao}</p>
-		</c:forEach>
-    </body>
+		<table>
+			<thead>
+				<th>Código</th>
+				<th>Descrição</th>
+				<th>Data cadastro</th>
+				<th>Estágio</th>
+			</thead>
+			<tbody>
+				<c:forEach items="${atividades}" var="atividadeVar">
+					<tr>
+						<td>${atividadeVar.codigo}</td>
+						<td>${atividadeVar.descricao}</td>
+						<td>${atividadeVar.dataCadastro}</td>
+						<td>${atividadeVar.estagio}</td>
+					</tr>
+				</c:forEach>
+			</tbody>
+	</table>
+</body>
 </html>
