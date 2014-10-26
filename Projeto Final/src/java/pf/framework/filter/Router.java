@@ -8,16 +8,16 @@ import java.util.logging.Logger;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import pf.framework.controller.ApplicationConstants;
+import pf.framework.exception.UnforwardException;
 import pf.framework.factory.ConnectionFactory;
-import pf.framework.navigation.URLHandler;
-import pf.framework.navigation.URIContext;
+import pf.framework.web.URLHandler;
+import pf.framework.web.WebContext;
 
 /**
  *
@@ -43,18 +43,17 @@ public class Router implements Filter {
 		HttpServletResponse response = (HttpServletResponse) rp;
 		initDefaults(request, response); //Inicializa os parâmetros padrões
 		
-		URIContext uriContext = new URIContext(request.getRequestURI());
-		String outcome = urlHandler.parseUrl(uriContext); //Decisão de navegação
+		WebContext webContext = new WebContext(request, response);
+		String outcome = urlHandler.parseUrl(webContext); //Decisão de navegação
 		
 		try (Connection connection = ConnectionFactory.getConnection()) {
 			Objects.requireNonNull(connection, "Não foi possível estabelecer conexão com banco de dados.");
 			request.setAttribute(ApplicationConstants.CONNECTION, connection);
-			request.setAttribute(ApplicationConstants.URI_CONTEXT, uriContext);
-			request.setAttribute(ApplicationConstants.PARAMETERS, uriContext.getParameters());
-			dispatchTo(outcome, request, response);
+			request.setAttribute(ApplicationConstants.WEB_CONTEXT, webContext);
+			webContext.forwardTo("/" + outcome);
 		} catch (Exception ex) {
 			request.setAttribute(ApplicationConstants.ERROR, ex);
-			dispatchToErrorPage(request, response);
+			dispatchToErrorPage(webContext);
 		}
 	}
 
@@ -66,17 +65,12 @@ public class Router implements Filter {
 		response.setContentType("text/html;charset=UTF-8"); //Setting content type
 	}
 
-	private void dispatchToErrorPage(HttpServletRequest request, HttpServletResponse response) {
+	private void dispatchToErrorPage(WebContext webContext) {
 		try {
-			dispatchTo(urlHandler.getDefaultRoute(), request, response);
-		} catch (Exception ex) {
+			webContext.forwardTo("/" + urlHandler.getDefaultRoute());
+		} catch (UnforwardException ex) {
 			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
 		}
-	}
-
-	private void dispatchTo(String outcome, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/" + outcome);
-		dispatcher.forward(request, response);
 	}
 
 }

@@ -1,4 +1,4 @@
-package pf.framework.navigation;
+package pf.framework.web;
 
 /**
  *

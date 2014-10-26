@@ -1,4 +1,4 @@
-package pf.framework.navigation;
+package pf.framework.web;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class URLHandler {
 		}
 	}
 
-	public String parseUrl(URIContext context) {
+	public String parseUrl(WebContext context) {
 		String requestString = context.getRequestString();
 		String[] paths = requestString.split("/");
 		int action = 1;
