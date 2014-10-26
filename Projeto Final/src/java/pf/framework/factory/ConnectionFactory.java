@@ -1,4 +1,4 @@
-package pf.factory;
+package pf.framework.factory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

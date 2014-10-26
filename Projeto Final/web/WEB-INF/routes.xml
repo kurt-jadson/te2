@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+	<route>
+		<from>home</from>
+		<to>/HomeController</to>
+	</route>
+	<error>
+		<default>DecodeErrorController</default>
+	</error>
+</routes>
