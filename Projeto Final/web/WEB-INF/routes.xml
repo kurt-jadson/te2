@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
-	<route case-sensitive="false">
+	<route case-sensitive="true">
 		<from>home</from>
 		<to>HomeController</to>
 	</route>

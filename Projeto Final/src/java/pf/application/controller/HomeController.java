@@ -4,37 +4,39 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import pf.framework.controller.AbstractController;
+import pf.framework.controller.ApplicationConstants;
+import pf.framework.navigation.URIContext;
 
 /**
  *
  * @author kurt
  */
 @WebServlet(urlPatterns = {"/HomeController"})
-public class HomeController extends AbstractController {
+public class HomeController extends HttpServlet {
 
-	@Override
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		setRequestResponse(request, response);
-		
-		switch(getAction()) {
+		URIContext context = (URIContext) request.getAttribute(ApplicationConstants.URI_CONTEXT);
+		switch(context.getAction()) {
 			case "listar":
-				listar();
+				listar(request, response);
 				break;
 			default:
-				defaultAction();
+				defaultAction(request, response);
 		}
 	}
 
-	private void listar() throws ServletException, IOException {
-		getRequest().getRequestDispatcher("/listar.jsp").forward(getRequest(), getResponse());
+	private void listar(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		request.getRequestDispatcher("/listar.jsp").forward(request, response);
 	}
 
-	private void defaultAction() throws IOException {
-		try (PrintWriter out = getResponse().getWriter()) {
+	private void defaultAction(HttpServletRequest request, HttpServletResponse response) 
+			throws IOException {
+		try (PrintWriter out = response.getWriter()) {
 			out.println("<!DOCTYPE html>");
 			out.println("<html>");
 			out.println("<head>");
@@ -45,6 +47,18 @@ public class HomeController extends AbstractController {
 			out.println("</body>");
 			out.println("</html>");
 		}
+	}
+	
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		processRequest(request, response);
 	}
 
 }

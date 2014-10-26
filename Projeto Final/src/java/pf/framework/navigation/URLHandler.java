@@ -22,14 +22,14 @@ import org.xml.sax.SAXException;
  *
  * @author kurt
  */
-public class NavigationHandler {
+public class URLHandler {
 
-	private static final Logger logger = Logger.getLogger(NavigationHandler.class.getName());
+	private static final Logger logger = Logger.getLogger(URLHandler.class.getName());
 	private final Document document;
 	private String defaultRoute;
 	private List<Route> routes;
 
-	public NavigationHandler(ServletContext servletContext) throws Exception {
+	public URLHandler(ServletContext servletContext) throws Exception {
 		defaultRoute = "DecodeErrorController";
 		routes = new ArrayList<>();
 
@@ -79,7 +79,7 @@ public class NavigationHandler {
 		}
 	}
 
-	public String parseNavigate(URIContext context) {
+	public String parseUrl(URIContext context) {
 		String requestString = context.getRequestString();
 		String[] paths = requestString.split("/");
 		int action = 1;
@@ -92,7 +92,6 @@ public class NavigationHandler {
 				String from = route.getFrom();
 				String outcome = outcomeString;
 				
-				System.out.println("ig: " + route.isIgnoreCase());
 				if(route.isIgnoreCase()) {
 					from = from.toUpperCase();
 					outcome = outcome.toUpperCase();
