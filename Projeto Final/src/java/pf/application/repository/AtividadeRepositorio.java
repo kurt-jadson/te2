@@ -14,6 +14,7 @@ import pf.framework.model.FieldType;
 public class AtividadeRepositorio {
 
 	private final Connection connection;
+	private static final String ATIVIDADE = "Atividade";
 	private static final Field CODIGO = new Field("CODIGO", FieldType.INTEGER);
 	private static final Field DESCRICAO = new Field("DESCRICAO", FieldType.STRING);
 	private static final Field DATACADASTRO = new Field("DATACADASTRO", FieldType.DATE);
@@ -34,7 +35,7 @@ public class AtividadeRepositorio {
 	}
 
 	private void insertAtividade(Atividade atividade) throws Exception {
-		DAO.insert("ATIVIDADE")
+		DAO.insert(ATIVIDADE)
 				.fields(CODIGO, DESCRICAO, DATACADASTRO, ESTAGIO)
 				.values(atividade.getCodigo(),
 						atividade.getDescricao(),
@@ -44,7 +45,7 @@ public class AtividadeRepositorio {
 	}
 
 	private void updateAtividade(Atividade atividade) throws Exception {
-		DAO.update("ATIVIDADE")
+		DAO.update(ATIVIDADE)
 				.fields(CODIGO, DESCRICAO, DATACADASTRO, ESTAGIO)
 				.values(atividade.getCodigo(),
 						atividade.getDescricao(),
@@ -55,20 +56,20 @@ public class AtividadeRepositorio {
 	}
 
 	public void removerAtividade(Atividade atividade) throws Exception {
-		DAO.delete("ATIVIDADE")
+		DAO.delete(ATIVIDADE)
 				.whereEquals(CODIGO, atividade.getCodigo())
 				.execute(connection);
 	}
 
 	public Atividade getAtividade(Integer codigo) throws Exception {
-		return DAO.select("ATIVIDADE")
+		return DAO.select(ATIVIDADE)
 				.fields(CODIGO, DESCRICAO, DATACADASTRO, DATACONCLUSAO, ESTAGIO)
 				.whereEquals(CODIGO, codigo)
 				.getSingleResult(connection, Atividade.class);
 	}
 
 	public List<Atividade> getAtividades() throws Exception {
-		return DAO.select("ATIVIDADE")
+		return DAO.select(ATIVIDADE)
 				.fields(CODIGO, DESCRICAO, DATACADASTRO, DATACONCLUSAO, ESTAGIO)
 				.getResult(connection, Atividade.class);
 	}

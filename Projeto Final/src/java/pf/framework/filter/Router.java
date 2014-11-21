@@ -41,6 +41,14 @@ public class Router implements Filter {
 	public void doFilter(ServletRequest rq, ServletResponse rp, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) rq;
 		HttpServletResponse response = (HttpServletResponse) rp;
+
+		//TODO: Implementar ResourceHandler
+		String context = rq.getServletContext().getContextPath();
+		if(request.getRequestURI().startsWith(context.concat("/assets"))) {
+			chain.doFilter(rq, rp);
+			return;
+		}
+		
 		initDefaults(request, response); //Inicializa os parâmetros padrões
 		
 		WebContext webContext = new WebContext(request, response);

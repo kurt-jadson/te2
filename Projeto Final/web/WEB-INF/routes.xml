@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <routes>
+	<route>
+		<from>login</from>
+		<to>LoginController</to>
+	</route>
 	<route case-sensitive="true">
 		<from>home</from>
 		<to>HomeController</to>

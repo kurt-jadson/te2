@@ -37,7 +37,7 @@ public class WebContext {
 	}
 
 	public String getAction() {
-		return action;
+		return action == null ? "" : action;
 	}
 
 	public void setAction(String action) {

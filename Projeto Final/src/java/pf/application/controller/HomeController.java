@@ -54,7 +54,7 @@ public class HomeController extends AbstractController {
 			}
 			
 			webContext.setAttribute("atividades", atividades);
-			webContext.forwardTo("/listar.jsp");
+			webContext.forwardTo("/pages/listar.jsp");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
