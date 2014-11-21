@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import pf.framework.controller.ApplicationConstants;
 import pf.framework.exception.UnforwardException;
 import pf.framework.exception.UnredirectException;
 
@@ -34,6 +35,14 @@ public class WebContext {
 
 	public String getApplicationContext() {
 		return applicationContext;
+	}
+	
+	public User getLoggedUser() {
+		return (User) getRequest().getSession().getAttribute(ApplicationConstants.USER_LOGGED_IN);
+	}
+	
+	public void setLoggedUser(User user) {
+		getRequest().getSession().setAttribute(ApplicationConstants.USER_LOGGED_IN, user);
 	}
 
 	public String getAction() {
@@ -72,7 +81,8 @@ public class WebContext {
 	}
 	
 	public String getParameter(String name) {
-		return parameters.get(name);
+		String param = parameters.get(name);
+		return param == null ? getRequest().getParameter(name) : param;
 	}
 
 	public Map<String, String> getParameters() {

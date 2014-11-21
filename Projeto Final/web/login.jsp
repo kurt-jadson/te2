@@ -11,17 +11,22 @@
 
 		<div class="container">
 
-		  <form class="form-signin" role="form">
+		  <form action="/projetofinal/login/signin"
+				method="post"
+				class="form-signin" 
+				role="form">
 			<h2 class="form-signin-heading">Acesso ao sistema</h2>
-			<label for="inputEmail" class="sr-only">Usuário</label>
-			<input id="inputEmail"
-				   type="email"
+			<label for="usuario" class="sr-only">Usuário</label>
+			<input id="usuario"
+				   name="usuario"
+				   type="text"
 				   class="form-control"
 				   placeholder="Usuário"
 				   required autofocus>
-			<label for="inputPassword"
+			<label for="senha"
 				   class="sr-only">Senha</label>
-			<input id="inputPassword"
+			<input id="senha"
+				   name="senha"
 				   type="password"
 				   class="form-control"
 				   placeholder="Senha"

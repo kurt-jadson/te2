@@ -8,6 +8,9 @@
 		<from>home</from>
 		<to>HomeController</to>
 	</route>
+	<login-route>
+		<to>LoginController</to>
+	</login-route>
 	<error>
 		<default>DecodeErrorController</default>
 	</error>

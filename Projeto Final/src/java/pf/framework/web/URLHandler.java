@@ -27,15 +27,18 @@ public class URLHandler {
 	private static final Logger logger = Logger.getLogger(URLHandler.class.getName());
 	private final Document document;
 	private String defaultRoute;
+	private String loginRoute;
 	private List<Route> routes;
 
 	public URLHandler(ServletContext servletContext) throws Exception {
 		defaultRoute = "DecodeErrorController";
+		loginRoute = "DecodeErrorController";
 		routes = new ArrayList<>();
 
 		try {
 			document = readXml(servletContext);
 			configureDefaultRoute();
+			configureLoginRoute();
 			readRoutes();
 		} catch (ParserConfigurationException | SAXException | IOException ex) {
 			String mensagem = "Configuração de rotas não foi possível de ser interpretada.";
@@ -63,17 +66,25 @@ public class URLHandler {
 		defaultRoute = defaultErrorNavigationElement.getFirstChild().getNodeValue();
 	}
 
+	private void configureLoginRoute() {
+		Node loginNode = document.getElementsByTagName("login-route").item(0);
+		Element loginElement = (Element) loginNode;
+		Node loginNavigation = loginElement.getElementsByTagName("to").item(0);
+		Element loginNavigationElement = (Element) loginNavigation;
+		loginRoute = loginNavigationElement.getFirstChild().getNodeValue();
+	}
+
 	private void readRoutes() {
 		NodeList nodeList = document.getElementsByTagName("route");
 		for (int i = 0, j = nodeList.getLength(); i < j; i++) {
 			Element routeNode = (Element) nodeList.item(i);
 			NodeList from = routeNode.getElementsByTagName("from");
 			Node to = routeNode.getElementsByTagName("to").item(0);
-			
+
 			String caseSensitive = routeNode.getAttribute("case-sensitive");
 			boolean ignoreCase = !caseSensitive.equals("") && !Boolean.parseBoolean(caseSensitive);
-			
-			for(int k = 0, l = from.getLength(); k < l; k++) {
+
+			for (int k = 0, l = from.getLength(); k < l; k++) {
 				String fromStr = from.item(k).getFirstChild().getNodeValue();
 				String toStr = to.getFirstChild().getNodeValue();
 				Route route = new Route(fromStr, toStr, ignoreCase);
@@ -86,7 +97,7 @@ public class URLHandler {
 		String requestString = context.getRequestString();
 		String[] paths = requestString.split("/");
 		int action = 1;
-		int controller = 0; 
+		int controller = 0;
 
 		for (int i = 0, j = paths.length; i < j; i++) {
 			String outcomeString = getOutcomeString(i, paths);
@@ -94,49 +105,58 @@ public class URLHandler {
 				Route route = routes.get(k);
 				String from = route.getFrom();
 				String outcome = outcomeString;
-				
-				if(route.isIgnoreCase()) {
+
+				if (route.isIgnoreCase()) {
 					from = from.toUpperCase();
 					outcome = outcome.toUpperCase();
 				}
-				
+
 				if (from.equals(outcome)) {
 					controller = k + 1;
 					action = i + 1;
 					break;
 				}
 			}
-			
+
 		}
 
 		if (controller == 0) {
 			return defaultRoute;
 		}
 
-		if(action < paths.length) {
+		if (action < paths.length) {
 			context.setAction(paths[action]);
 		} else {
 			context.setAction(null);
 		}
-		
+
 		Map<String, String> parameters = new HashMap<>();
-		for(int i = action + 1, j = paths.length; i < j; i+=2) {
+		for (int i = action + 1, j = paths.length; i < j; i += 2) {
 			String value = null;
-			if(i + 1 < j) {
-				value = paths[i+1];
+			if (i + 1 < j) {
+				value = paths[i + 1];
 			}
 			parameters.put(paths[i], value);
 		}
 		context.setParameters(parameters);
-		
-		return routes.get(controller - 1).getTo();
+
+		String goTo = routes.get(controller - 1).getTo();
+
+		if (context.getLoggedUser() == null) {
+			if (Boolean.FALSE.equals(loginRoute.equals(goTo))) {
+				context.setAction("");
+			}
+			return loginRoute;
+		}
+
+		return goTo;
 	}
 
 	private String getOutcomeString(int index, String[] paths) {
-		if(index >= paths.length) {
+		if (index >= paths.length) {
 			return "";
 		}
-		
+
 		StringBuilder outcomeString = new StringBuilder();
 		String p = "";
 		for (int i = 1, j = index + 1; i < j; i++) {
