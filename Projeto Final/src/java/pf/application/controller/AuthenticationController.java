@@ -10,8 +10,8 @@ import pf.framework.web.WebContext;
  *
  * @author kurt
  */
-@WebServlet(urlPatterns = {"/LoginController"})
-public class LoginController extends AbstractController {
+@WebServlet(urlPatterns = {"/AuthenticationController"})
+public class AuthenticationController extends AbstractController {
 
 	@Override
 	protected void processRequest(WebContext context) throws WebException {
@@ -20,6 +20,7 @@ public class LoginController extends AbstractController {
 				signin(context);
 				break;
 			case "logout":
+				System.out.println("Passei aqui cara!");
 				logout(context);
 				break;
 			default:

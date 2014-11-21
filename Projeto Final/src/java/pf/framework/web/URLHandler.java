@@ -80,6 +80,7 @@ public class URLHandler {
 			Element routeNode = (Element) nodeList.item(i);
 			NodeList from = routeNode.getElementsByTagName("from");
 			Node to = routeNode.getElementsByTagName("to").item(0);
+			Node action = routeNode.getElementsByTagName("action").item(0);
 
 			String caseSensitive = routeNode.getAttribute("case-sensitive");
 			boolean ignoreCase = !caseSensitive.equals("") && !Boolean.parseBoolean(caseSensitive);
@@ -88,6 +89,11 @@ public class URLHandler {
 				String fromStr = from.item(k).getFirstChild().getNodeValue();
 				String toStr = to.getFirstChild().getNodeValue();
 				Route route = new Route(fromStr, toStr, ignoreCase);
+
+				if (action != null) {
+					route.setAction(action.getFirstChild().getNodeValue());
+				}
+
 				routes.add(route);
 			}
 		}
@@ -124,10 +130,16 @@ public class URLHandler {
 			return defaultRoute;
 		}
 
-		if (action < paths.length) {
-			context.setAction(paths[action]);
+		Route routeToGo = routes.get(controller - 1);
+		if (routeToGo.getAction().isEmpty()) {
+			if (action < paths.length) {
+				context.setAction(paths[action]);
+			} else {
+				context.setAction(null);
+			}
 		} else {
-			context.setAction(null);
+			context.setAction(routeToGo.getAction());
+			action--;
 		}
 
 		Map<String, String> parameters = new HashMap<>();
@@ -140,7 +152,7 @@ public class URLHandler {
 		}
 		context.setParameters(parameters);
 
-		String goTo = routes.get(controller - 1).getTo();
+		String goTo = routeToGo.getTo();
 
 		if (context.getLoggedUser() == null) {
 			if (Boolean.FALSE.equals(loginRoute.equals(goTo))) {

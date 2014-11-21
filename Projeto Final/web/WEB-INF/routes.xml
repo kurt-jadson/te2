@@ -2,14 +2,19 @@
 <routes>
 	<route>
 		<from>login</from>
-		<to>LoginController</to>
+		<to>AuthenticationController</to>
+	</route>
+	<route>
+		<from>logout</from>
+		<to>AuthenticationController</to>
+		<action>logout</action>
 	</route>
 	<route case-sensitive="true">
 		<from>home</from>
 		<to>HomeController</to>
 	</route>
 	<login-route>
-		<to>LoginController</to>
+		<to>AuthenticationController</to>
 	</login-route>
 	<error>
 		<default>DecodeErrorController</default>
