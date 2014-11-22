@@ -124,6 +124,13 @@ public class DAO {
 		valueConditions.add(value);
 		return this;
 	}
+	
+	public DAO andEquals(Field field, Object value) {
+		sql.append(" AND ").append(field.name).append(" = ?");
+		fieldConditions.add(field);
+		valueConditions.add(value);
+		return this;
+	}
 
 	public boolean execute(Connection connection) throws Exception {
 		try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {

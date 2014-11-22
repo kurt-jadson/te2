@@ -1,0 +1,22 @@
+.navbar-brand {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.form-include {
+  max-width: 500px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.lb {
+    min-width: 200px;
+}
+
+.lb::after {
+    content: ':'
+}
+
+.page-header {
+    margin: 0;
+}

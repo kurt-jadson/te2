@@ -12,22 +12,20 @@
     <body>
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="glyphicon glyphicon-user">Ranking de políticos</h1>
+				<h1 class="glyphicon glyphicon-folder-open">Acervo</h1>
 			</div>
 			<table class="table">
 				<thead>
 					<th>Código</th>
-					<th>Descrição</th>
-					<th>Data cadastro</th>
-					<th>Estágio</th>
+					<th>Título</th>
+					<th>Preço</th>
 				</thead>
 				<tbody>
-					<c:forEach items="${atividades}" var="atividadeVar">
+					<c:forEach items="${desenhos}" var="desenhoVar">
 						<tr>
-							<td>${atividadeVar.codigo}</td>
-							<td>${atividadeVar.descricao}</td>
-							<td>${atividadeVar.dataCadastro}</td>
-							<td>${atividadeVar.estagio}</td>
+							<td>${desenhoVar.id}</td>
+							<td>${desenhoVar.titulo}</td>
+							<td>${desenhoVar.preco}</td>
 						</tr>
 					</c:forEach>
 				</tbody>

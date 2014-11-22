@@ -9,9 +9,14 @@
 		<to>AuthenticationController</to>
 		<action>logout</action>
 	</route>
+	<route>
+		<from>desenhos</from>
+		<to>DesenhoController</to>
+	</route>
 	<route case-sensitive="true">
-		<from>home</from>
-		<to>HomeController</to>
+		<from>acervo</from>
+		<to>DesenhoController</to>
+		<action>listar</action>
 	</route>
 	<login-route>
 		<to>AuthenticationController</to>

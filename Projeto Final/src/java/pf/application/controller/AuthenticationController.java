@@ -1,9 +1,12 @@
 package pf.application.controller;
 
+import java.sql.Connection;
 import javax.servlet.annotation.WebServlet;
+import pf.application.entity.Usuario;
+import pf.application.repository.UsuarioRepositorio;
 import pf.framework.controller.AbstractController;
 import pf.framework.exception.WebException;
-import pf.framework.web.User;
+import pf.framework.util.WebUtils;
 import pf.framework.web.WebContext;
 
 /**
@@ -20,7 +23,6 @@ public class AuthenticationController extends AbstractController {
 				signin(context);
 				break;
 			case "logout":
-				System.out.println("Passei aqui cara!");
 				logout(context);
 				break;
 			default:
@@ -29,17 +31,22 @@ public class AuthenticationController extends AbstractController {
 	}
 
 	private void signin(WebContext webContext) throws WebException {
-		//TODO: Procurar no banco
-		if ("Jadson".equals(webContext.getParameter("usuario"))
-				&& "1".equals(webContext.getParameter("senha"))) {
-			User u = new User() {
-			};
-			webContext.setLoggedUser(u);
-			webContext.redirectTo(webContext, "/home/listar");
-			return;
-		}
+		try {
+			Connection connection = WebUtils.getConnection(webContext.getRequest());
+			UsuarioRepositorio usuarioRepositorio = new UsuarioRepositorio(connection);
+			String username = webContext.getParameter("usuario");
+			String password = webContext.getParameter("senha");
+			Usuario usuario = usuarioRepositorio.buscarPorUsernamePassword(username, password);
 
-		webContext.redirectTo(webContext, "/login");
+			if (usuario == null) {
+				webContext.redirectTo(webContext, "/login");
+			} else {
+				webContext.setLoggedUser(usuario);
+				webContext.redirectTo(webContext, "/acervo");
+			}
+		} catch (Exception ex) {
+			throw new WebException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
 	private void logout(WebContext webContext) throws WebException {

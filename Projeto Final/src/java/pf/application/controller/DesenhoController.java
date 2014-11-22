@@ -1,11 +1,12 @@
 package pf.application.controller;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Atividade;
+import pf.application.entity.Desenho;
 import pf.application.repository.AtividadeRepositorio;
+import pf.application.repository.DesenhoRepositorio;
 import pf.framework.controller.AbstractController;
 import pf.framework.exception.UnknownActionRequest;
 import pf.framework.exception.WebException;
@@ -16,8 +17,8 @@ import pf.framework.web.WebContext;
  *
  * @author kurt
  */
-@WebServlet(urlPatterns = {"/HomeController"})
-public class HomeController extends AbstractController {
+@WebServlet(urlPatterns = {"/DesenhoController"})
+public class DesenhoController extends AbstractController {
 
 	@Override
 	protected void processRequest(WebContext context) throws WebException {
@@ -25,8 +26,11 @@ public class HomeController extends AbstractController {
 			case "listar":
 				listar(context);
 				break;
-			case "inserir":
-				inserir(context);
+			case "novo":
+				context.forwardTo("/pages/novo.jsp");
+				break;
+			case "salvar":
+				salvar(context);
 				break;
 			case "atualizar":
 				atualizar(context);
@@ -42,33 +46,34 @@ public class HomeController extends AbstractController {
 	private void listar(WebContext webContext) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
-			Integer codigo = webContext.getParameterInteger("codigo");
-			AtividadeRepositorio repositorio = new AtividadeRepositorio(connection);
-			
-			List<Atividade> atividades;
-			if(codigo == null) {
-				atividades = repositorio.getAtividades();
-			} else {
-				atividades = new ArrayList<>();
-				atividades.add(repositorio.getAtividade(codigo));
-			}
-			
-			webContext.setAttribute("atividades", atividades);
+			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
+//			Integer codigo = webContext.getParameterInteger("codigo");
+//			
+			List<Desenho> desenhos;
+//			if(codigo == null) {
+				desenhos = desenhoRepositorio.buscarAcervo();
+//			} else {
+//				desenhos = new ArrayList<>();
+//				atividades.add(repositorio.getAtividade(codigo));
+//			}
+//			
+			webContext.setAttribute("desenhos", desenhos);
 			webContext.forwardTo("/pages/listar.jsp");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
 
-	private void inserir(WebContext webContext) throws WebException {
+	private void salvar(WebContext webContext) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
-			Integer codigo = webContext.getParameterInteger("codigo");
+			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
 
-			AtividadeRepositorio repositorio = new AtividadeRepositorio(connection);
-			Atividade atividade = new Atividade(codigo, "Atividade " + codigo, 10);
-			repositorio.adicionarAtividade(atividade);
-			webContext.redirectTo(webContext, "/home/listar");
+			Desenho desenho = new Desenho();
+			desenho.setTitulo(webContext.getParameter("titulo"));
+			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
+			desenhoRepositorio.salvar(desenho);
+			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
