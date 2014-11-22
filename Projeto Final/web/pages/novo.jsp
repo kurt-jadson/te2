@@ -36,9 +36,13 @@
 
 				<div class="input-group">
 					<span class="input-group-addon lb">Cor</span>
-					<input type="text"
-						   name="cor"
-						   class="form-control" />
+					<select name="cor"
+							class="form-control">
+						<c:forEach items="${cores}"
+								   var="corVar">
+							<option value="${corVar}">${corVar.descricao}</option>
+						</c:forEach>
+					</select>
 			    </div>
 
 				<div class="input-group">

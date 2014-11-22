@@ -2,6 +2,7 @@ package pf.application.entity;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import pf.application.entity.enums.Cor;
 
 /**
  *
@@ -13,7 +14,7 @@ public class Desenho {
 	private String titulo;
 	private Integer volume;
 	private Integer tempo;
-	private String cor;
+	private Cor cor;
 	private Integer anoLancamento;
 	private String recomendacao;
 	private Integer regiaoDvd;
@@ -55,11 +56,11 @@ public class Desenho {
 		this.tempo = tempo;
 	}
 
-	public String getCor() {
+	public Cor getCor() {
 		return cor;
 	}
 
-	public void setCor(String cor) {
+	public void setCor(Cor cor) {
 		this.cor = cor;
 	}
 

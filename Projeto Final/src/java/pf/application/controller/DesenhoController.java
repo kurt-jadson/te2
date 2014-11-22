@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Atividade;
 import pf.application.entity.Desenho;
+import pf.application.entity.enums.Cor;
 import pf.application.repository.AtividadeRepositorio;
 import pf.application.repository.DesenhoRepositorio;
 import pf.framework.controller.AbstractController;
@@ -27,7 +28,7 @@ public class DesenhoController extends AbstractController {
 				listar(context);
 				break;
 			case "novo":
-				context.forwardTo("/pages/novo.jsp");
+				novo(context);
 				break;
 			case "salvar":
 				salvar(context);
@@ -63,6 +64,11 @@ public class DesenhoController extends AbstractController {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
+	
+	private void novo(WebContext webContext) throws WebException {
+		webContext.setAttribute("cores", Cor.values());
+		webContext.forwardTo("/pages/novo.jsp");
+	}
 
 	private void salvar(WebContext webContext) throws WebException {
 		try {
@@ -72,6 +78,7 @@ public class DesenhoController extends AbstractController {
 			Desenho desenho = new Desenho();
 			desenho.setTitulo(webContext.getParameter("titulo"));
 			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
+			desenho.setCor(Cor.valueOf(webContext.getParameter("cor")));
 			desenhoRepositorio.salvar(desenho);
 			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {

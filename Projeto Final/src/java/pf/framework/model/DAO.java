@@ -180,9 +180,16 @@ public class DAO {
 			T entity = type.newInstance();
 			for(int i = 0, j = fields.length; i < j; i++) {
 				Field field = fields[i];
+				Object obj = rs.getObject(i + 1);
+				
+				if(FieldType.ENUM.equals(field.type) && obj != null) {
+					EnumField ef = (EnumField) field;
+					obj = Enum.valueOf(ef.getEnumType(), (String) obj);
+				}
+				
 				java.lang.reflect.Field rf = getFieldIgnoreCase(field, dfields);
 				rf.setAccessible(true);
-				rf.set(entity, rs.getObject(i + 1));
+				rf.set(entity, obj);
 				rf.setAccessible(false);
 			}
 			

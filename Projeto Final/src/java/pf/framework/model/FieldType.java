@@ -13,6 +13,7 @@ public enum FieldType {
 	
 	BIG_DECIMAL,
 	DATE,
+	ENUM,
 	INTEGER,
 	LONG,
 	STRING;
@@ -26,6 +27,10 @@ public enum FieldType {
 			case DATE:
 				Date date = new Date(((java.util.Date) value).getTime());
 				ps.setDate(pos, date);
+				break;
+			case ENUM:
+				Enum e = (Enum) value;
+				ps.setString(pos, e.name());
 				break;
 			case INTEGER:
 				ps.setInt(pos, (Integer) value);

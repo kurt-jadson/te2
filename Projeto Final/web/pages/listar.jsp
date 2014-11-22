@@ -18,6 +18,7 @@
 				<thead>
 					<th>Código</th>
 					<th>Título</th>
+					<th>Cor</th>
 					<th>Preço</th>
 				</thead>
 				<tbody>
@@ -25,6 +26,7 @@
 						<tr>
 							<td>${desenhoVar.id}</td>
 							<td>${desenhoVar.titulo}</td>
+							<td>${desenhoVar.cor.descricao}</td>
 							<td>${desenhoVar.preco}</td>
 						</tr>
 					</c:forEach>
