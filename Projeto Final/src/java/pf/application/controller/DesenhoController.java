@@ -6,6 +6,9 @@ import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Atividade;
 import pf.application.entity.Desenho;
 import pf.application.entity.enums.Cor;
+import pf.application.entity.enums.FormatoTela;
+import pf.application.entity.enums.Legenda;
+import pf.application.entity.enums.Pais;
 import pf.application.repository.AtividadeRepositorio;
 import pf.application.repository.DesenhoRepositorio;
 import pf.framework.controller.AbstractController;
@@ -66,7 +69,10 @@ public class DesenhoController extends AbstractController {
 	}
 	
 	private void novo(WebContext webContext) throws WebException {
+		webContext.setAttribute("legendas", Legenda.values());
 		webContext.setAttribute("cores", Cor.values());
+		webContext.setAttribute("formatosTela", FormatoTela.values());
+		webContext.setAttribute("paisesOrigem", Pais.values());
 		webContext.forwardTo("/pages/novo.jsp");
 	}
 
@@ -77,8 +83,12 @@ public class DesenhoController extends AbstractController {
 
 			Desenho desenho = new Desenho();
 			desenho.setTitulo(webContext.getParameter("titulo"));
+			desenho.setVolume(webContext.getParameterInteger("volume"));
 			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
 			desenho.setCor(Cor.valueOf(webContext.getParameter("cor")));
+			desenho.setLegenda(Legenda.valueOf(webContext.getParameter("legenda")));
+			desenho.setFormatoTela(FormatoTela.valueOf(webContext.getParameter("formatoTela")));
+			desenho.setPaisOrigem(Pais.valueOf(webContext.getParameter("paisOrigem")));
 			desenhoRepositorio.salvar(desenho);
 			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {

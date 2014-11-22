@@ -3,6 +3,9 @@ package pf.application.entity;
 import java.math.BigDecimal;
 import java.util.Objects;
 import pf.application.entity.enums.Cor;
+import pf.application.entity.enums.FormatoTela;
+import pf.application.entity.enums.Legenda;
+import pf.application.entity.enums.Pais;
 
 /**
  *
@@ -18,9 +21,9 @@ public class Desenho {
 	private Integer anoLancamento;
 	private String recomendacao;
 	private Integer regiaoDvd;
-	private String legenda;
-	private String formatoTela;
-	private String paisOrigem;
+	private Legenda legenda;
+	private FormatoTela formatoTela;
+	private Pais paisOrigem;
 	private String descricao;
 	private BigDecimal preco;
 
@@ -88,27 +91,27 @@ public class Desenho {
 		this.regiaoDvd = regiaoDvd;
 	}
 
-	public String getLegenda() {
+	public Legenda getLegenda() {
 		return legenda;
 	}
 
-	public void setLegenda(String legenda) {
+	public void setLegenda(Legenda legenda) {
 		this.legenda = legenda;
 	}
 
-	public String getFormatoTela() {
+	public FormatoTela getFormatoTela() {
 		return formatoTela;
 	}
 
-	public void setFormatoTela(String formatoTela) {
+	public void setFormatoTela(FormatoTela formatoTela) {
 		this.formatoTela = formatoTela;
 	}
 
-	public String getPaisOrigem() {
+	public Pais getPaisOrigem() {
 		return paisOrigem;
 	}
 
-	public void setPaisOrigem(String paisOrigem) {
+	public void setPaisOrigem(Pais paisOrigem) {
 		this.paisOrigem = paisOrigem;
 	}
 

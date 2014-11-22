@@ -67,22 +67,26 @@ public class WebContext {
 	
 	public Integer getParameterInteger(String name) {
 		String param = getParameter(name);
-		return (param == null ? null : Integer.valueOf(param));
+		return (paramIsEmpty(param) ? null : Integer.valueOf(param));
 	}
 	
 	public Long getParameterLong(String name) {
 		String param = getParameter(name);
-		return (param == null ? null : Long.valueOf(param));
+		return (paramIsEmpty(param) ? null : Long.valueOf(param));
 	}
 	
 	public BigDecimal getParameterBigDecimal(String name) {
 		String param = getParameter(name);
-		return (param == null ? null : BigDecimal.valueOf(Double.valueOf(param)));
+		return (paramIsEmpty(param) ? null : BigDecimal.valueOf(Double.valueOf(param)));
 	}
 	
 	public String getParameter(String name) {
 		String param = parameters.get(name);
-		return param == null ? getRequest().getParameter(name) : param;
+		return paramIsEmpty(param) ? getRequest().getParameter(name) : param;
+	}
+	
+	private boolean paramIsEmpty(String param) {
+		 return param == null || param.isEmpty();
 	}
 
 	public Map<String, String> getParameters() {

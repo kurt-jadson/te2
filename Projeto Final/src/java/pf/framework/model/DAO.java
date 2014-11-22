@@ -70,33 +70,6 @@ public class DAO {
 
 	public DAO fields(Field... fields) {
 		this.fields = fields;
-
-		if (insert) {
-			for (int i = 0, j = fields.length; i < j; i++) {
-				Field field = fields[i];
-
-				if (i == 0) {
-					sql.append(" (");
-					sql.append(field.name);
-				} else if (i == j - 1) {
-					sql.append(", ").append(field.name);
-					sql.append(")");
-				} else {
-					sql.append(", ").append(field.name);
-				}
-			}
-
-			for (int i = 0, j = fields.length; i < j; i++) {
-				if (i == 0) {
-					sql.append(" VALUES (?");
-				} else if (i == j - 1) {
-					sql.append(", ?)");
-				} else {
-					sql.append(", ?");
-				}
-			}
-		}
-
 		return this;
 	}
 
@@ -133,13 +106,48 @@ public class DAO {
 	}
 
 	public boolean execute(Connection connection) throws Exception {
-		try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+
+		if (insert) {
+			String prefix = " (";
 			for (int i = 0, j = fields.length; i < j; i++) {
-				FieldType.set(fields[i].type, values[i], i + 1, ps);
+				Field field = fields[i];
+				
+				if(values[i] != null) {
+					sql.append(prefix).append(field.name);
+					prefix = ", ";
+				}
+				
+				if(i == j - 1) {
+					sql.append(")");
+				}
+				
+			}
+
+			prefix = " VALUES (";
+			for (int i = 0, j = fields.length; i < j; i++) {
+				
+				if(values[i] != null) {
+					sql.append(prefix).append("?");
+					prefix = ", ";
+				}
+				
+				if (i == j - 1) {
+					sql.append(")");
+				}
+			}
+		}
+		
+		try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+			int k = 0;
+			for (int i = 0, j = fields.length; i < j; i++) {
+				if(values[i] != null) {
+					k++;
+					FieldType.set(fields[i].type, values[i], k, ps);
+				}
 			}
 
 			for (int i = 0, j = fieldConditions.size(); i < j; i++) {
-				FieldType.set(fieldConditions.get(i).type, valueConditions.get(i), i + fields.length + 1, ps);
+				FieldType.set(fieldConditions.get(i).type, valueConditions.get(i), i + k + 1, ps);
 			}
 
 			return ps.execute();

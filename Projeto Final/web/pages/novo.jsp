@@ -17,7 +17,8 @@
 					<span class="input-group-addon lb">Título</span>
 					<input type="text"
 						   name="titulo"
-						   class="form-control" />
+						   class="form-control"
+						   required />
 			    </div>
 				
 				<div class="input-group">
@@ -68,23 +69,35 @@
 
 				<div class="input-group">
 					<span class="input-group-addon lb">Legenda</span>
-					<input type="text"
-						   name="legenda"
-						   class="form-control" />
+					<select name="legenda"
+							class="form-control">
+						<c:forEach items="${legendas}"
+								   var="legendaVar">
+							<option value="${legendaVar}">${legendaVar.descricao}</option>
+						</c:forEach>
+					</select>
 			    </div>
 
 				<div class="input-group">
-					<span class="input-group-addon lb">Formato da Tela</span>
-					<input type="text"
-						   name="formatoTela"
-						   class="form-control" />
+					<span class="input-group-addon lb">Formato da tela</span>
+					<select name="formatoTela"
+							class="form-control">
+						<c:forEach items="${formatosTela}"
+								   var="formatoVar">
+							<option value="${formatoVar}">${formatoVar.descricao}</option>
+						</c:forEach>
+					</select>
 			    </div>
 
 				<div class="input-group">
-					<span class="input-group-addon lb">País de Origem</span>
-					<input type="text"
-						   name="paisOrigem"
-						   class="form-control" />
+					<span class="input-group-addon lb">País de origem</span>
+					<select name="paisOrigem"
+							class="form-control">
+						<c:forEach items="${paisesOrigem}"
+								   var="paisVar">
+							<option value="${paisVar}">${paisVar.descricao}</option>
+						</c:forEach>
+					</select>
 			    </div>
 
 				<div class="input-group">
@@ -98,7 +111,8 @@
 					<span class="input-group-addon lb">Preço</span>
 					<input type="currency"
 						   name="preco"
-						   class="form-control" />
+						   class="form-control"
+						   required />
 			    </div>
 				
 				<button type="submit" 

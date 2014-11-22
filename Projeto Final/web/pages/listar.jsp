@@ -18,7 +18,11 @@
 				<thead>
 					<th>Código</th>
 					<th>Título</th>
+					<th>Volume</th>
 					<th>Cor</th>
+					<th>Legenda</th>
+					<th>Formato da tela</th>
+					<th>País de origem</th>
 					<th>Preço</th>
 				</thead>
 				<tbody>
@@ -26,7 +30,11 @@
 						<tr>
 							<td>${desenhoVar.id}</td>
 							<td>${desenhoVar.titulo}</td>
+							<td>${desenhoVar.volume}</td>
 							<td>${desenhoVar.cor.descricao}</td>
+							<td>${desenhoVar.legenda.descricao}</td>
+							<td>${desenhoVar.formatoTela.descricao}</td>
+							<td>${desenhoVar.paisOrigem.descricao}</td>
 							<td>${desenhoVar.preco}</td>
 						</tr>
 					</c:forEach>
