@@ -18,6 +18,10 @@
 		<to>DesenhoController</to>
 		<action>listar</action>
 	</route>
+	<route>
+		<from>idiomas</from>
+		<to>IdiomaController</to>
+	</route>
 	<login-route>
 		<to>AuthenticationController</to>
 	</login-route>

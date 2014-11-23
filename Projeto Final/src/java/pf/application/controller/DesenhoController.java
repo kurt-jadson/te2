@@ -23,6 +23,10 @@ import pf.framework.web.WebContext;
 @WebServlet(urlPatterns = {"/DesenhoController"})
 public class DesenhoController extends AbstractController {
 
+	private static final String ACERVO = "/acervo";
+	private static final String LISTAR = "/pages/desenho/listar.jsp";
+	private static final String FORMULARIO = "/pages/desenho/formulario.jsp";
+	
 	@Override
 	protected void processRequest(WebContext context) throws WebException {
 		switch (context.getAction()) {
@@ -57,7 +61,7 @@ public class DesenhoController extends AbstractController {
 			List<Desenho> desenhos = desenhoRepositorio.buscarAcervo();
 			webContext.setAttribute("desenhos", desenhos);
 			webContext.setAttribute("pageHeaderTitle", "Acervo");
-			webContext.forwardTo("/pages/listar.jsp");
+			webContext.forwardTo(LISTAR);
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
@@ -67,7 +71,7 @@ public class DesenhoController extends AbstractController {
 		carregarListas(webContext);
 		webContext.setAttribute("desenho", new Desenho());
 		webContext.setAttribute("pageHeaderTitle", "Novo");
-		webContext.forwardTo("/pages/formulario.jsp");
+		webContext.forwardTo(FORMULARIO);
 	}
 
 	private void editar(WebContext webContext) throws WebException {
@@ -81,7 +85,7 @@ public class DesenhoController extends AbstractController {
 			carregarListas(webContext);
 			webContext.setAttribute("desenho", desenho);
 			webContext.setAttribute("pageHeaderTitle", "Editando " + desenho.getTitulo());
-			webContext.forwardTo("/pages/formulario.jsp");
+			webContext.forwardTo(FORMULARIO);
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
@@ -115,7 +119,7 @@ public class DesenhoController extends AbstractController {
 			desenho.setDescricao(ctx.getParameter("descricao"));
 			desenho.setPreco(ctx.getParameterBigDecimal("preco"));
 			desenhoRepositorio.salvar(desenho);
-			ctx.redirectTo(ctx, "/acervo");
+			ctx.redirectTo(ctx, ACERVO);
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
@@ -129,7 +133,7 @@ public class DesenhoController extends AbstractController {
 			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
 			Desenho desenho = repositorio.buscarPorId(codigo);
 			repositorio.remover(desenho);
-			webContext.redirectTo(webContext, "/acervo");
+			webContext.redirectTo(webContext, ACERVO);
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
@@ -144,7 +148,7 @@ public class DesenhoController extends AbstractController {
 			List<Desenho> desenhos = repositorio.buscarPorTitulo(titulo);
 			webContext.setAttribute("desenhos", desenhos);
 			webContext.setAttribute("pageHeaderTitle", "Busca: " + titulo);
-			webContext.forwardTo("/pages/listar.jsp");
+			webContext.forwardTo(LISTAR);
 		} catch(Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}

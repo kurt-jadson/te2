@@ -41,7 +41,7 @@
 					<a href="/projetofinal/acervo" class="glyphicon glyphicon-folder-open">Acervo</a>
 				</li>
 				<li>
-					<a href="/projetofinal/desenhos/novo" class="glyphicon glyphicon-pencil">Novo</a>
+					<a href="/projetofinal/idiomas/listar" class="glyphicon glyphicon-flag">Idiomas</a>
 				</li>
 				<li>
 					<a href="/projetofinal/logout" class="glyphicon glyphicon-off">Sair</a>
