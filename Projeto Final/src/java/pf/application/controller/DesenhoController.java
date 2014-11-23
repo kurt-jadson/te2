@@ -34,11 +34,11 @@ public class DesenhoController extends AbstractController {
 			case "novo":
 				novo(context);
 				break;
+			case "editar":
+				editar(context);
+				break;
 			case "salvar":
 				salvar(context);
-				break;
-			case "atualizar":
-				atualizar(context);
 				break;
 			case "remover":
 				remover(context);
@@ -70,34 +70,55 @@ public class DesenhoController extends AbstractController {
 	}
 	
 	private void novo(WebContext webContext) throws WebException {
+		carregarListas(webContext);
+		webContext.setAttribute("desenho", new Desenho());
+		webContext.forwardTo("/pages/formulario.jsp");
+	}
+	
+	private void editar(WebContext webContext) throws WebException {
+		try {
+			Connection connection = WebUtils.getConnection(webContext.getRequest());
+			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
+			
+			Integer codigo = webContext.getParameterInteger("codigo");
+			Desenho desenho = repositorio.buscarPorId(codigo);
+
+			carregarListas(webContext);
+			webContext.setAttribute("desenho", desenho);
+			webContext.forwardTo("/pages/formulario.jsp");
+		} catch (Exception ex) {
+			throw new WebException(ex.getLocalizedMessage(), ex);
+		}
+	}
+	
+	private void carregarListas(WebContext webContext) {
 		webContext.setAttribute("cores", Cor.values());
 		webContext.setAttribute("recomendacoes", Recomendacao.values());
 		webContext.setAttribute("legendas", Legenda.values());
 		webContext.setAttribute("formatosTela", FormatoTela.values());
 		webContext.setAttribute("paisesOrigem", Pais.values());
-		webContext.forwardTo("/pages/novo.jsp");
 	}
 
-	private void salvar(WebContext webContext) throws WebException {
+	private void salvar(WebContext ctx) throws WebException {
 		try {
-			Connection connection = WebUtils.getConnection(webContext.getRequest());
+			Connection connection = WebUtils.getConnection(ctx.getRequest());
 			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
 
 			Desenho desenho = new Desenho();
-			desenho.setTitulo(webContext.getParameter("titulo"));
-			desenho.setVolume(webContext.getParameterInteger("volume"));
-			desenho.setTempo(webContext.getParameterInteger("tempo"));
-			desenho.setCor(Cor.valueOf(webContext.getParameter("cor")));
-			desenho.setAnoLancamento(webContext.getParameterInteger("ano"));
-			desenho.setRecomendacao(webContext.getParameterEnum("recomendacao", Recomendacao.class));
-			desenho.setRegiaoDvd(webContext.getParameterInteger("regiao"));
-			desenho.setLegenda(webContext.getParameterEnum("legenda", Legenda.class));
-			desenho.setFormatoTela(webContext.getParameterEnum("formatoTela", FormatoTela.class));
-			desenho.setPaisOrigem(webContext.getParameterEnum("paisOrigem", Pais.class));
-			desenho.setDescricao(webContext.getParameter("descricao"));
-			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
+			desenho.setTitulo(ctx.getParameter("titulo"));
+			desenho.setVolume(ctx.getParameterInteger("volume"));
+			desenho.setTempo(ctx.getParameterInteger("tempo"));
+			desenho.setCor(Cor.valueOf(ctx.getParameter("cor")));
+			desenho.setAnoLancamento(ctx.getParameterInteger("ano"));
+			desenho.setRecomendacao(ctx.getParameterEnum("recomendacao", Recomendacao.class));
+			desenho.setRegiaoDvd(ctx.getParameterInteger("regiao"));
+			desenho.setLegenda(ctx.getParameterEnum("legenda", Legenda.class));
+			desenho.setFormatoTela(ctx.getParameterEnum("formatoTela", FormatoTela.class));
+			desenho.setPaisOrigem(ctx.getParameterEnum("paisOrigem", Pais.class));
+			desenho.setDescricao(ctx.getParameter("descricao"));
+			desenho.setPreco(ctx.getParameterBigDecimal("preco"));
 			desenhoRepositorio.salvar(desenho);
-			webContext.redirectTo(webContext, "/acervo");
+			ctx.redirectTo(ctx, "/acervo");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
@@ -123,10 +144,10 @@ public class DesenhoController extends AbstractController {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
 			Integer codigo = webContext.getParameterInteger("codigo");
 
-			AtividadeRepositorio repositorio = new AtividadeRepositorio(connection);
-			Atividade atividade = repositorio.getAtividade(codigo);
-			repositorio.removerAtividade(atividade);
-			webContext.redirectTo(webContext, "/home/listar");
+			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
+			Desenho desenho = repositorio.buscarPorId(codigo);
+			repositorio.remover(desenho);
+			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}

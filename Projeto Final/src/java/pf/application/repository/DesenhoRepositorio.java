@@ -41,21 +41,10 @@ public class DesenhoRepositorio {
 	public DesenhoRepositorio(Connection connection) {
 		this.connection = connection;
 	}
-	
+
 	public void salvar(Desenho desenho) throws Exception {
 		DAO.insert(DESENHO)
-				.fields(TITULO,
-						VOLUME,
-						TEMPO,
-						COR,
-						ANO_LANCAMENTO,
-						RECOMENDACAO,
-						REGIAO_DVD,
-						LEGENDA,
-						FORMATO_TELA,
-						PAIS_ORIGEM,
-						DESCRICAO,
-						PRECO)
+				.fields(insert())
 				.values(desenho.getTitulo(),
 						desenho.getVolume(),
 						desenho.getTempo(),
@@ -70,23 +59,34 @@ public class DesenhoRepositorio {
 						desenho.getPreco())
 				.execute(connection);
 	}
-	
+
 	public List<Desenho> buscarAcervo() throws Exception {
 		return DAO.select(DESENHO)
-				.fields(ID, 
-						TITULO,
-						VOLUME,
-						TEMPO,
-						COR,
-						ANO_LANCAMENTO,
-						RECOMENDACAO,
-						REGIAO_DVD,
-						LEGENDA,
-						FORMATO_TELA,
-						PAIS_ORIGEM,
-						DESCRICAO,
-						PRECO)
+				.fields(todos())
 				.getResult(connection, Desenho.class);
 	}
-	
+
+	public Desenho buscarPorId(Integer id) throws Exception {
+		return DAO.select(DESENHO)
+				.fields(todos())
+				.whereEquals(ID, id)
+				.getSingleResult(connection, Desenho.class);
+	}
+
+	public void remover(Desenho desenho) throws Exception {
+		DAO.delete(DESENHO)
+				.whereEquals(ID, desenho.getId())
+				.execute(connection);
+	}
+
+	public Field[] insert() {
+		return new Field[]{TITULO, VOLUME, TEMPO, COR, ANO_LANCAMENTO, RECOMENDACAO,
+			REGIAO_DVD, LEGENDA, FORMATO_TELA, PAIS_ORIGEM, DESCRICAO, PRECO};
+	}
+
+	public Field[] todos() {
+		return new Field[]{ID, TITULO, VOLUME, TEMPO, COR, ANO_LANCAMENTO, RECOMENDACAO,
+			REGIAO_DVD, LEGENDA, FORMATO_TELA, PAIS_ORIGEM, DESCRICAO, PRECO};
+	}
+
 }

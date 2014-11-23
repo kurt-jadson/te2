@@ -29,6 +29,7 @@
 					<th>País de origem</th>
 					<th>Descrição</th>
 					<th>Preço</th>
+					<th></th>
 				</thead>
 				<tbody>
 					<c:forEach items="${desenhos}" var="desenhoVar">
@@ -46,6 +47,14 @@
 							<td>${desenhoVar.paisOrigem.descricao}</td>
 							<td>${desenhoVar.descricao}</td>
 							<td>${desenhoVar.preco}</td>
+							<td>
+								<a class="glyphicon glyphicon-pencil" 
+								   title="Editar"
+								   href="/projetofinal/desenhos/editar/codigo/${desenhoVar.id}"></a>
+								<a class="glyphicon glyphicon-trash" 
+								   title="Remover"
+								   href="/projetofinal/desenhos/remover/codigo/${desenhoVar.id}"></a>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
