@@ -19,10 +19,15 @@
 					<th>Código</th>
 					<th>Título</th>
 					<th>Volume</th>
+					<th>Tempo</th>
 					<th>Cor</th>
+					<th>Ano de lançamento</th>
+					<th>Recomendação</th>
+					<th>Região do DVD</th>
 					<th>Legenda</th>
 					<th>Formato da tela</th>
 					<th>País de origem</th>
+					<th>Descrição</th>
 					<th>Preço</th>
 				</thead>
 				<tbody>
@@ -31,10 +36,15 @@
 							<td>${desenhoVar.id}</td>
 							<td>${desenhoVar.titulo}</td>
 							<td>${desenhoVar.volume}</td>
+							<td>${desenhoVar.tempo}</td>
 							<td>${desenhoVar.cor.descricao}</td>
+							<td>${desenhoVar.anoLancamento}</td>
+							<td>${desenhoVar.recomendacao.descricao}</td>
+							<td>${desenhoVar.regiaoDvd}</td>
 							<td>${desenhoVar.legenda.descricao}</td>
 							<td>${desenhoVar.formatoTela.descricao}</td>
 							<td>${desenhoVar.paisOrigem.descricao}</td>
+							<td>${desenhoVar.descricao}</td>
 							<td>${desenhoVar.preco}</td>
 						</tr>
 					</c:forEach>

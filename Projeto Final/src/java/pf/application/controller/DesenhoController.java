@@ -9,6 +9,7 @@ import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
+import pf.application.entity.enums.Recomendacao;
 import pf.application.repository.AtividadeRepositorio;
 import pf.application.repository.DesenhoRepositorio;
 import pf.framework.controller.AbstractController;
@@ -69,8 +70,9 @@ public class DesenhoController extends AbstractController {
 	}
 	
 	private void novo(WebContext webContext) throws WebException {
-		webContext.setAttribute("legendas", Legenda.values());
 		webContext.setAttribute("cores", Cor.values());
+		webContext.setAttribute("recomendacoes", Recomendacao.values());
+		webContext.setAttribute("legendas", Legenda.values());
 		webContext.setAttribute("formatosTela", FormatoTela.values());
 		webContext.setAttribute("paisesOrigem", Pais.values());
 		webContext.forwardTo("/pages/novo.jsp");
@@ -84,11 +86,16 @@ public class DesenhoController extends AbstractController {
 			Desenho desenho = new Desenho();
 			desenho.setTitulo(webContext.getParameter("titulo"));
 			desenho.setVolume(webContext.getParameterInteger("volume"));
-			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
+			desenho.setTempo(webContext.getParameterInteger("tempo"));
 			desenho.setCor(Cor.valueOf(webContext.getParameter("cor")));
-			desenho.setLegenda(Legenda.valueOf(webContext.getParameter("legenda")));
-			desenho.setFormatoTela(FormatoTela.valueOf(webContext.getParameter("formatoTela")));
-			desenho.setPaisOrigem(Pais.valueOf(webContext.getParameter("paisOrigem")));
+			desenho.setAnoLancamento(webContext.getParameterInteger("ano"));
+			desenho.setRecomendacao(webContext.getParameterEnum("recomendacao", Recomendacao.class));
+			desenho.setRegiaoDvd(webContext.getParameterInteger("regiao"));
+			desenho.setLegenda(webContext.getParameterEnum("legenda", Legenda.class));
+			desenho.setFormatoTela(webContext.getParameterEnum("formatoTela", FormatoTela.class));
+			desenho.setPaisOrigem(webContext.getParameterEnum("paisOrigem", Pais.class));
+			desenho.setDescricao(webContext.getParameter("descricao"));
+			desenho.setPreco(webContext.getParameterBigDecimal("preco"));
 			desenhoRepositorio.salvar(desenho);
 			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {

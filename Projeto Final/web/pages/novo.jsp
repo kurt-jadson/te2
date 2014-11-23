@@ -55,9 +55,13 @@
 
 				<div class="input-group">
 					<span class="input-group-addon lb">Recomendação</span>
-					<input type="text"
-						   name="recomendacao"
-						   class="form-control" />
+					<select name="recomendacao"
+							class="form-control">
+						<c:forEach items="${recomendacoes}"
+								   var="recomendacaoVar">
+							<option value="${recomendacaoVar}">${recomendacaoVar.descricao}</option>
+						</c:forEach>
+					</select>
 			    </div>
 
 				<div class="input-group">
@@ -103,7 +107,7 @@
 				<div class="input-group">
 					<span class="input-group-addon lb">Descrição</span>
 					<textarea type="text"
-							  name="paisOrigem"
+							  name="descricao"
 							  class="form-control"></textarea>
 			    </div>
 

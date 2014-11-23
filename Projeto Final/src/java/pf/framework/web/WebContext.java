@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import pf.framework.controller.ApplicationConstants;
 import pf.framework.exception.UnforwardException;
 import pf.framework.exception.UnredirectException;
+import pf.framework.util.WebUtils;
 
 /**
  *
@@ -78,6 +79,10 @@ public class WebContext {
 	public BigDecimal getParameterBigDecimal(String name) {
 		String param = getParameter(name);
 		return (paramIsEmpty(param) ? null : BigDecimal.valueOf(Double.valueOf(param)));
+	}
+	
+	public <T extends Enum> T getParameterEnum(String name, Class<T> type) {
+		return WebUtils.getEnum(this, getParameter(name), type);
 	}
 	
 	public String getParameter(String name) {

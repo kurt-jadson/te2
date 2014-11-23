@@ -6,6 +6,7 @@ import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
+import pf.application.entity.enums.Recomendacao;
 
 /**
  *
@@ -19,7 +20,7 @@ public class Desenho {
 	private Integer tempo;
 	private Cor cor;
 	private Integer anoLancamento;
-	private String recomendacao;
+	private Recomendacao recomendacao;
 	private Integer regiaoDvd;
 	private Legenda legenda;
 	private FormatoTela formatoTela;
@@ -75,11 +76,11 @@ public class Desenho {
 		this.anoLancamento = anoLancamento;
 	}
 
-	public String getRecomendacao() {
+	public Recomendacao getRecomendacao() {
 		return recomendacao;
 	}
 
-	public void setRecomendacao(String recomendacao) {
+	public void setRecomendacao(Recomendacao recomendacao) {
 		this.recomendacao = recomendacao;
 	}
 
