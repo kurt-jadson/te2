@@ -43,21 +43,32 @@ public class DesenhoRepositorio {
 	}
 
 	public void salvar(Desenho desenho) throws Exception {
-		DAO.insert(DESENHO)
-				.fields(insert())
-				.values(desenho.getTitulo(),
-						desenho.getVolume(),
-						desenho.getTempo(),
-						desenho.getCor(),
-						desenho.getAnoLancamento(),
-						desenho.getRecomendacao(),
-						desenho.getRegiaoDvd(),
-						desenho.getLegenda(),
-						desenho.getFormatoTela(),
-						desenho.getPaisOrigem(),
-						desenho.getDescricao(),
-						desenho.getPreco())
-				.execute(connection);
+		DAO dao;
+		if (desenho.isNew()) {
+			dao = DAO.insert(DESENHO);
+		} else {
+			dao = DAO.update(DESENHO);
+		}
+
+		dao.fields(todosSemId());
+		dao.values(desenho.getTitulo(),
+				desenho.getVolume(),
+				desenho.getTempo(),
+				desenho.getCor(),
+				desenho.getAnoLancamento(),
+				desenho.getRecomendacao(),
+				desenho.getRegiaoDvd(),
+				desenho.getLegenda(),
+				desenho.getFormatoTela(),
+				desenho.getPaisOrigem(),
+				desenho.getDescricao(),
+				desenho.getPreco());
+
+		if(!desenho.isNew()) {
+			dao.whereEquals(ID, desenho.getId());
+		}
+		
+		dao.execute(connection);
 	}
 
 	public List<Desenho> buscarAcervo() throws Exception {
@@ -72,6 +83,13 @@ public class DesenhoRepositorio {
 				.whereEquals(ID, id)
 				.getSingleResult(connection, Desenho.class);
 	}
+	
+	public List<Desenho> buscarPorTitulo(String titulo) throws Exception {
+		return DAO.select(DESENHO)
+				.fields(todos())
+				.whereLike(TITULO, "%" + titulo + "%")
+				.getResult(connection, Desenho.class);
+	}
 
 	public void remover(Desenho desenho) throws Exception {
 		DAO.delete(DESENHO)
@@ -79,7 +97,7 @@ public class DesenhoRepositorio {
 				.execute(connection);
 	}
 
-	public Field[] insert() {
+	public Field[] todosSemId() {
 		return new Field[]{TITULO, VOLUME, TEMPO, COR, ANO_LANCAMENTO, RECOMENDACAO,
 			REGIAO_DVD, LEGENDA, FORMATO_TELA, PAIS_ORIGEM, DESCRICAO, PRECO};
 	}

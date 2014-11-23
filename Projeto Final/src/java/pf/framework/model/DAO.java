@@ -77,13 +77,13 @@ public class DAO {
 		this.values = values;
 
 		if (!insert) {
+			String prefix = " SET ";
 			for (int i = 0, j = fields.length; i < j; i++) {
 				Field field = fields[i];
-
-				if (i == 0) {
-					sql.append(" SET ").append(field.name).append(" = ?");
-				} else {
-					sql.append(", ").append(field.name).append(" = ?");
+				
+				if(values[i] != null) {
+					sql.append(prefix).append(field.name).append(" = ?");
+					prefix = ", ";
 				}
 			}
 		}
@@ -93,6 +93,13 @@ public class DAO {
 
 	public DAO whereEquals(Field field, Object value) {
 		sql.append(" WHERE ").append(field.name).append(" = ?");
+		fieldConditions.add(field);
+		valueConditions.add(value);
+		return this;
+	}
+	
+	public DAO whereLike(Field field, Object value) {
+		sql.append(" WHERE ").append(field.name).append(" LIKE ?");
 		fieldConditions.add(field);
 		valueConditions.add(value);
 		return this;

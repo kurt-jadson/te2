@@ -1,17 +1,23 @@
 package pf.application.entity;
 
 import java.util.Objects;
+import pf.framework.model.Entity;
 import pf.framework.web.User;
 
 /**
  *
  * @author kurt
  */
-public class Usuario implements User {
+public class Usuario implements Entity, User {
 
 	private Integer id;
 	private String username;
 	private String password;
+
+	@Override
+	public boolean isNew() {
+		return id == null;
+	}
 
 	public Integer getId() {
 		return id;

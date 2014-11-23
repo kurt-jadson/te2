@@ -21,9 +21,15 @@
 			<a class="navbar-brand" href="#">Desenho Store</a>
 		</div>
 
-		<form class="navbar-form navbar-right" role="search">
+		<form action="/projetofinal/desenhos/buscar"
+			  method="post"
+			  class="navbar-form navbar-right"
+			  role="search">
 			<div class="form-group">
-			  <input type="text" class="form-control">
+			  <input type="text" 
+					 name="qtitulo" 
+					 class="form-control"
+					 placeholder="Título">
 			</div>
 			<button type="submit" class="btn btn-default">Buscar</button>
         </form>
@@ -34,7 +40,12 @@
 				<li class="active">
 					<a href="/projetofinal/acervo" class="glyphicon glyphicon-folder-open">Acervo</a>
 				</li>
-				<li><a href="/projetofinal/desenhos/novo" class="glyphicon glyphicon-pencil">Novo</a></li>
+				<li>
+					<a href="/projetofinal/desenhos/novo" class="glyphicon glyphicon-pencil">Novo</a>
+				</li>
+				<li>
+					<a href="/projetofinal/logout" class="glyphicon glyphicon-off">Sair</a>
+				</li>
 			</ul>
 		</div>
 

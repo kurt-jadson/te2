@@ -7,12 +7,13 @@ import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
 import pf.application.entity.enums.Recomendacao;
+import pf.framework.model.Entity;
 
 /**
  *
  * @author kurt
  */
-public class Desenho {
+public class Desenho implements Entity {
 
 	private Integer id;
 	private String titulo;
@@ -28,6 +29,11 @@ public class Desenho {
 	private String descricao;
 	private BigDecimal preco;
 
+	@Override
+	public boolean isNew() {
+		return id == null;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

@@ -3,14 +3,12 @@ package pf.application.controller;
 import java.sql.Connection;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
-import pf.application.entity.Atividade;
 import pf.application.entity.Desenho;
 import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
 import pf.application.entity.enums.Recomendacao;
-import pf.application.repository.AtividadeRepositorio;
 import pf.application.repository.DesenhoRepositorio;
 import pf.framework.controller.AbstractController;
 import pf.framework.exception.UnknownActionRequest;
@@ -43,6 +41,9 @@ public class DesenhoController extends AbstractController {
 			case "remover":
 				remover(context);
 				break;
+			case "buscar":
+				buscar(context);
+				break;
 			default:
 				throw new UnknownActionRequest(context.getAction());
 		}
@@ -52,45 +53,40 @@ public class DesenhoController extends AbstractController {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
 			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
-//			Integer codigo = webContext.getParameterInteger("codigo");
-//			
-			List<Desenho> desenhos;
-//			if(codigo == null) {
-				desenhos = desenhoRepositorio.buscarAcervo();
-//			} else {
-//				desenhos = new ArrayList<>();
-//				atividades.add(repositorio.getAtividade(codigo));
-//			}
-//			
+
+			List<Desenho> desenhos = desenhoRepositorio.buscarAcervo();
 			webContext.setAttribute("desenhos", desenhos);
+			webContext.setAttribute("pageHeaderTitle", "Acervo");
 			webContext.forwardTo("/pages/listar.jsp");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
-	
+
 	private void novo(WebContext webContext) throws WebException {
 		carregarListas(webContext);
 		webContext.setAttribute("desenho", new Desenho());
+		webContext.setAttribute("pageHeaderTitle", "Novo");
 		webContext.forwardTo("/pages/formulario.jsp");
 	}
-	
+
 	private void editar(WebContext webContext) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
 			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
-			
+
 			Integer codigo = webContext.getParameterInteger("codigo");
 			Desenho desenho = repositorio.buscarPorId(codigo);
 
 			carregarListas(webContext);
 			webContext.setAttribute("desenho", desenho);
+			webContext.setAttribute("pageHeaderTitle", "Editando " + desenho.getTitulo());
 			webContext.forwardTo("/pages/formulario.jsp");
 		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
-	
+
 	private void carregarListas(WebContext webContext) {
 		webContext.setAttribute("cores", Cor.values());
 		webContext.setAttribute("recomendacoes", Recomendacao.values());
@@ -105,6 +101,7 @@ public class DesenhoController extends AbstractController {
 			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
 
 			Desenho desenho = new Desenho();
+			desenho.setId(ctx.getParameterInteger("codigo"));
 			desenho.setTitulo(ctx.getParameter("titulo"));
 			desenho.setVolume(ctx.getParameterInteger("volume"));
 			desenho.setTempo(ctx.getParameterInteger("tempo"));
@@ -124,21 +121,6 @@ public class DesenhoController extends AbstractController {
 		}
 	}
 
-	private void atualizar(WebContext webContext) throws WebException {
-		try {
-			Connection connection = WebUtils.getConnection(webContext.getRequest());
-			Integer codigo = webContext.getParameterInteger("codigo");
-
-			AtividadeRepositorio repositorio = new AtividadeRepositorio(connection);
-			Atividade atividade = repositorio.getAtividade(codigo);
-			atividade.setDescricao("Atividade Atualizada " + atividade.getCodigo());
-			repositorio.adicionarAtividade(atividade);
-			webContext.redirectTo(webContext, "/home/listar");
-		} catch (Exception ex) {
-			throw new WebException(ex.getLocalizedMessage(), ex);
-		}
-	}
-
 	private void remover(WebContext webContext) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
@@ -149,6 +131,21 @@ public class DesenhoController extends AbstractController {
 			repositorio.remover(desenho);
 			webContext.redirectTo(webContext, "/acervo");
 		} catch (Exception ex) {
+			throw new WebException(ex.getLocalizedMessage(), ex);
+		}
+	}
+	
+	private void buscar(WebContext webContext) throws WebException {
+		try {
+			Connection connection = WebUtils.getConnection(webContext.getRequest());
+			String titulo = webContext.getParameter("qtitulo");
+			
+			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
+			List<Desenho> desenhos = repositorio.buscarPorTitulo(titulo);
+			webContext.setAttribute("desenhos", desenhos);
+			webContext.setAttribute("pageHeaderTitle", "Busca: " + titulo);
+			webContext.forwardTo("/pages/listar.jsp");
+		} catch(Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}

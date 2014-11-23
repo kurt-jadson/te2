@@ -6,12 +6,16 @@
     <body>
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="glyphicon glyphicon-folder-open">Novo</h1>
+				<h1 class="glyphicon glyphicon-folder-open">${pageHeaderTitle}</h1>
 			</div>
 			
 			<form action="/projetofinal/desenhos/salvar"
 				  method="post"
 				  class="container form-include">
+				
+				<input type="hidden"
+					   name="codigo"
+					   value="${desenho.id}" />
 				
 				<div class="input-group">
 					<span class="input-group-addon lb">Título</span>
