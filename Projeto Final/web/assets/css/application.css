@@ -20,3 +20,7 @@
 .page-header {
     margin: 0;
 }
+
+.control, .vertical-space {
+    padding-top: 3px;
+}

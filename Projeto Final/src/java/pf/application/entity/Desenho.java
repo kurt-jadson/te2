@@ -1,6 +1,9 @@
 package pf.application.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
@@ -28,12 +31,17 @@ public class Desenho implements Entity {
 	private Pais paisOrigem;
 	private String descricao;
 	private BigDecimal preco;
+	private final List<Idioma> idiomas;
+
+	public Desenho() {
+		idiomas = new ArrayList<>();
+	}
 
 	@Override
 	public boolean isNew() {
 		return id == null;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -138,6 +146,22 @@ public class Desenho implements Entity {
 		this.preco = preco;
 	}
 
+	public void addAll(List<Idioma> idiomas) {
+		for (Idioma idioma : idiomas) {
+			add(idioma);
+		}
+	}
+
+	public void add(Idioma idioma) {
+		if (!idiomas.contains(idioma)) {
+			idiomas.add(idioma);
+		}
+	}
+
+	public List<Idioma> getIdiomas() {
+		return Collections.unmodifiableList(idiomas);
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 7;
@@ -159,5 +183,5 @@ public class Desenho implements Entity {
 		}
 		return true;
 	}
-	
+
 }

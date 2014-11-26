@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Desenho;
+import pf.application.entity.Idioma;
 import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
 import pf.application.entity.enums.Recomendacao;
 import pf.application.repository.DesenhoRepositorio;
+import pf.application.repository.IdiomaRepositorio;
 import pf.framework.controller.AbstractController;
 import pf.framework.exception.UnknownActionRequest;
 import pf.framework.exception.WebException;
@@ -104,6 +106,9 @@ public class DesenhoController extends AbstractController {
 			Connection connection = WebUtils.getConnection(ctx.getRequest());
 			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
 
+			IdiomaRepositorio idiomaRepositorio = new IdiomaRepositorio(connection);
+			Idioma idioma = idiomaRepositorio.buscarPorId(2);
+			
 			Desenho desenho = new Desenho();
 			desenho.setId(ctx.getParameterInteger("codigo"));
 			desenho.setTitulo(ctx.getParameter("titulo"));
@@ -118,6 +123,8 @@ public class DesenhoController extends AbstractController {
 			desenho.setPaisOrigem(ctx.getParameterEnum("paisOrigem", Pais.class));
 			desenho.setDescricao(ctx.getParameter("descricao"));
 			desenho.setPreco(ctx.getParameterBigDecimal("preco"));
+			
+			desenho.add(idioma);
 			desenhoRepositorio.salvar(desenho);
 			ctx.redirectTo(ctx, ACERVO);
 		} catch (Exception ex) {

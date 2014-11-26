@@ -27,6 +27,13 @@ public class DAO {
 		valueConditions = new ArrayList();
 		insert = false;
 	}
+	
+	public static DAO createInsertOrUpdate(Entity entity, String table) {
+		if(entity.isNew()) {
+			return insert(table);
+		}
+		return update(table);
+	}
 
 	public StringBuilder getSql() {
 		return sql;
@@ -67,6 +74,12 @@ public class DAO {
 
 		return dao;
 	}
+	
+	public static DAO selectMax(String table, Field field) {
+		DAO dao = new DAO();
+		dao.getSql().append("SELECT MAX(").append(field.name).append(") FROM ").append(table);
+		return dao;
+	}
 
 	public DAO fields(Field... fields) {
 		this.fields = fields;
@@ -95,6 +108,21 @@ public class DAO {
 		sql.append(" WHERE ").append(field.name).append(" = ?");
 		fieldConditions.add(field);
 		valueConditions.add(value);
+		return this;
+	}
+	
+	public DAO whereIn(Field field, Object... values) {
+		sql.append(" WHERE ").append(field.name).append("IN (");
+		fieldConditions.add(field);
+		
+		String prefix = "";
+		for(Object value : values) {
+			sql.append(prefix).append("?");
+			prefix = ",";
+			valueConditions.add(value);
+		}
+		sql.append(")");
+		
 		return this;
 	}
 	
