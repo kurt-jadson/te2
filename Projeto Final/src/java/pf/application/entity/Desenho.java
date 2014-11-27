@@ -153,9 +153,7 @@ public class Desenho implements Entity {
 	}
 
 	public void add(Idioma idioma) {
-		if (!idiomas.contains(idioma)) {
-			idiomas.add(idioma);
-		}
+		idiomas.add(idioma);
 	}
 
 	public List<Idioma> getIdiomas() {

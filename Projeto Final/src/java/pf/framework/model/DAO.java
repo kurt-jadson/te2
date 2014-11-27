@@ -111,14 +111,14 @@ public class DAO {
 		return this;
 	}
 	
-	public DAO whereIn(Field field, Object... values) {
-		sql.append(" WHERE ").append(field.name).append("IN (");
-		fieldConditions.add(field);
+	public DAO whereIn(Field field, Object[] values) {
+		sql.append(" WHERE ").append(field.name).append(" IN (");
 		
 		String prefix = "";
 		for(Object value : values) {
 			sql.append(prefix).append("?");
 			prefix = ",";
+			fieldConditions.add(field);
 			valueConditions.add(value);
 		}
 		sql.append(")");

@@ -8,7 +8,7 @@ import pf.framework.model.Entity;
  * @author kurt
  */
 public class Idioma implements Entity {
-	
+
 	private Integer id;
 	private String nome;
 	private SistemaSom sistemaSom;
@@ -17,7 +17,7 @@ public class Idioma implements Entity {
 	public boolean isNew() {
 		return id == null;
 	}
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -41,5 +41,5 @@ public class Idioma implements Entity {
 	public void setSistemaSom(SistemaSom sistemaSom) {
 		this.sistemaSom = sistemaSom;
 	}
-	
+
 }

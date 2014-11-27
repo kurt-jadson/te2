@@ -1,7 +1,7 @@
 package pf.application.repository;
 
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import pf.application.entity.Desenho;
@@ -12,6 +12,7 @@ import pf.application.entity.enums.FormatoTela;
 import pf.application.entity.enums.Legenda;
 import pf.application.entity.enums.Pais;
 import pf.application.entity.enums.Recomendacao;
+import pf.application.entity.enums.SistemaSom;
 import pf.framework.model.DAO;
 import pf.framework.model.EnumField;
 import pf.framework.model.Field;
@@ -44,7 +45,11 @@ public class DesenhoRepositorio {
 	private static final String DESENHO_IDIOMA = "DESENHO_IDIOMA";
 	private static final Field DESENHO_ID = new Field("DESENHO_ID", FieldType.INTEGER);
 	private static final Field IDIOMA_ID = new Field("IDIOMA_ID", FieldType.INTEGER);
-
+	
+	private static final String IDIOMA = "IDIOMA";
+	private static final Field NOME = new Field("NOME", FieldType.STRING);
+	private static final Field SISTEMA_SOM = new EnumField("SISTEMASOM", SistemaSom.class);
+	
 	public DesenhoRepositorio(Connection connection) {
 		this.connection = connection;
 	}
@@ -89,7 +94,7 @@ public class DesenhoRepositorio {
 	}
 
 	private void salvarIdiomas(Desenho desenho) throws Exception {
-		DAO.delete(DESENHO_IDIOMA).whereEquals(DESENHO_ID, desenho.getId());
+		DAO.delete(DESENHO_IDIOMA).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
 		for (Idioma idioma : desenho.getIdiomas()) {
 			DAO.insert(DESENHO_IDIOMA)
 					.fields(DESENHO_ID, IDIOMA_ID)
@@ -113,15 +118,29 @@ public class DesenhoRepositorio {
 	
 	public Desenho buscarPorIdFetchListas(Integer id) throws Exception {
 		Desenho desenho = buscarPorId(id);
-		List<DesenhoIdioma> idiomas = buscarIdiomas(desenho);
+		desenho.addAll(buscarIdiomas(desenho));
 		return desenho;
 	}
 	
-	private List<DesenhoIdioma> buscarIdiomas(Desenho desenho) throws Exception {
-		return DAO.select(DESENHO_IDIOMA)
+	private List<Idioma> buscarIdiomas(Desenho desenho) throws Exception {
+		List<DesenhoIdioma> idiomas = DAO.select(DESENHO_IDIOMA)
 				.fields(DESENHO_ID, IDIOMA_ID)
-				.whereEquals(ID, desenho.getId())
+				.whereEquals(DESENHO_ID, desenho.getId())
 				.getResult(connection, DesenhoIdioma.class);
+		
+		if(idiomas.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
+		
+		Integer[] idiomasIds = new Integer[idiomas.size()];
+		for(int i = 0, j = idiomas.size(); i < j; i++) {
+			idiomasIds[i] = idiomas.get(i).getIdioma();
+		}
+		
+		return DAO.select(IDIOMA)
+				.fields(ID, NOME, SISTEMA_SOM)
+				.whereIn(ID, idiomasIds)
+				.getResult(connection, Idioma.class);
 	}
 
 	public List<Desenho> buscarPorTitulo(String titulo) throws Exception {
@@ -132,9 +151,10 @@ public class DesenhoRepositorio {
 	}
 
 	public void remover(Desenho desenho) throws Exception {
-		DAO.delete(DESENHO)
-				.whereEquals(ID, desenho.getId())
-				.execute(connection);
+		connection.setAutoCommit(false);
+		DAO.delete(DESENHO_IDIOMA).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
+		DAO.delete(DESENHO).whereEquals(ID, desenho.getId()).execute(connection);
+		connection.commit();
 	}
 
 	public Field[] todosSemId() {

@@ -185,7 +185,40 @@
 						 role="tabpanel"
 						 class="tab-pane fade"
 						 aria-labelledby="idioma-tab">
-						IDIOMA
+
+						<div class="input-group">
+							<span class="input-group-addon lb">Idioma</span>
+							<select name="idioma"
+									class="form-control">
+								<c:forEach items="${idiomas}"
+										   var="idiomaVar">
+									<option value="${idiomaVar.id}">
+										${idiomaVar.nome}
+									</option>
+								</c:forEach>
+							</select>
+							<button id="adicionarIdioma" 
+									class="btn btn-default btn-group-justified"
+									onclick="return false;">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						</div>
+
+						<ui id="listaIdiomas" class="list-group">
+							<c:forEach items="${desenho.idiomas}"
+									   var="idiomaVar">
+								<li class="list-group-item">
+									<span>${idiomaVar.nome}</span>
+									<input type="hidden" name="idiomaId" value="${idiomaVar.id}" />
+									<a class="removerIdioma"
+									   href="#"
+									   title="Remover">
+										<span class="glyphicon glyphicon-trash"></span>
+									</a>
+								</li>
+							</c:forEach>
+						</ui>
+
 					</div>
 					<div id="episodio"
 						 role="tabpanel"

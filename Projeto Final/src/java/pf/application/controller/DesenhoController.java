@@ -1,6 +1,7 @@
 package pf.application.controller;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Desenho;
@@ -28,7 +29,7 @@ public class DesenhoController extends AbstractController {
 	private static final String ACERVO = "/acervo";
 	private static final String LISTAR = "/pages/desenho/listar.jsp";
 	private static final String FORMULARIO = "/pages/desenho/formulario.jsp";
-	
+
 	@Override
 	protected void processRequest(WebContext context) throws WebException {
 		switch (context.getAction()) {
@@ -82,7 +83,7 @@ public class DesenhoController extends AbstractController {
 			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
 
 			Integer codigo = webContext.getParameterInteger("codigo");
-			Desenho desenho = repositorio.buscarPorId(codigo);
+			Desenho desenho = repositorio.buscarPorIdFetchListas(codigo);
 
 			carregarListas(webContext);
 			webContext.setAttribute("desenho", desenho);
@@ -93,22 +94,28 @@ public class DesenhoController extends AbstractController {
 		}
 	}
 
-	private void carregarListas(WebContext webContext) {
-		webContext.setAttribute("cores", Cor.values());
-		webContext.setAttribute("recomendacoes", Recomendacao.values());
-		webContext.setAttribute("legendas", Legenda.values());
-		webContext.setAttribute("formatosTela", FormatoTela.values());
-		webContext.setAttribute("paisesOrigem", Pais.values());
+	private void carregarListas(WebContext webContext) throws WebException {
+		try {
+			Connection connection = WebUtils.getConnection(webContext.getRequest());
+			IdiomaRepositorio idiomaRepositorio = new IdiomaRepositorio(connection);
+
+			webContext.setAttribute("cores", Cor.values());
+			webContext.setAttribute("recomendacoes", Recomendacao.values());
+			webContext.setAttribute("legendas", Legenda.values());
+			webContext.setAttribute("formatosTela", FormatoTela.values());
+			webContext.setAttribute("paisesOrigem", Pais.values());
+			webContext.setAttribute("idiomas", idiomaRepositorio.buscarTodos());
+		} catch (Exception ex) {
+			throw new WebException(ex.getLocalizedMessage(), ex);
+		}
 	}
 
 	private void salvar(WebContext ctx) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(ctx.getRequest());
 			DesenhoRepositorio desenhoRepositorio = new DesenhoRepositorio(connection);
-
 			IdiomaRepositorio idiomaRepositorio = new IdiomaRepositorio(connection);
-			Idioma idioma = idiomaRepositorio.buscarPorId(2);
-			
+
 			Desenho desenho = new Desenho();
 			desenho.setId(ctx.getParameterInteger("codigo"));
 			desenho.setTitulo(ctx.getParameter("titulo"));
@@ -123,8 +130,16 @@ public class DesenhoController extends AbstractController {
 			desenho.setPaisOrigem(ctx.getParameterEnum("paisOrigem", Pais.class));
 			desenho.setDescricao(ctx.getParameter("descricao"));
 			desenho.setPreco(ctx.getParameterBigDecimal("preco"));
-			
-			desenho.add(idioma);
+
+			String[] idiomasString = ctx.getRequest().getParameterValues("idiomaId");
+			if (idiomasString != null) {
+				for (String s : idiomasString) {
+					Idioma idioma = new Idioma();
+					idioma.setId(Integer.valueOf(s));
+					desenho.add(idioma);
+				}
+			}
+
 			desenhoRepositorio.salvar(desenho);
 			ctx.redirectTo(ctx, ACERVO);
 		} catch (Exception ex) {
@@ -145,18 +160,18 @@ public class DesenhoController extends AbstractController {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
-	
+
 	private void buscar(WebContext webContext) throws WebException {
 		try {
 			Connection connection = WebUtils.getConnection(webContext.getRequest());
 			String titulo = webContext.getParameter("qtitulo");
-			
+
 			DesenhoRepositorio repositorio = new DesenhoRepositorio(connection);
 			List<Desenho> desenhos = repositorio.buscarPorTitulo(titulo);
 			webContext.setAttribute("desenhos", desenhos);
 			webContext.setAttribute("pageHeaderTitle", "Busca: " + titulo);
 			webContext.forwardTo(LISTAR);
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			throw new WebException(ex.getLocalizedMessage(), ex);
 		}
 	}
