@@ -32,9 +32,11 @@ public class Desenho implements Entity {
 	private String descricao;
 	private BigDecimal preco;
 	private final List<Idioma> idiomas;
+	private final List<Episodio> episodios;
 
 	public Desenho() {
 		idiomas = new ArrayList<>();
+		episodios = new ArrayList<>();
 	}
 
 	@Override
@@ -146,18 +148,28 @@ public class Desenho implements Entity {
 		this.preco = preco;
 	}
 
-	public void addAll(List<Idioma> idiomas) {
-		for (Idioma idioma : idiomas) {
-			add(idioma);
-		}
+	public void addAllIdiomas(List<Idioma> idiomas) {
+		this.idiomas.addAll(idiomas);
 	}
 
-	public void add(Idioma idioma) {
+	public void addIdioma(Idioma idioma) {
 		idiomas.add(idioma);
+	}
+	
+	public void addAllEpisodios(List<Episodio> episodios) {
+		this.episodios.addAll(episodios);
+	}
+	
+	public void addEpisodio(Episodio episodio) {
+		episodios.add(episodio);
 	}
 
 	public List<Idioma> getIdiomas() {
 		return Collections.unmodifiableList(idiomas);
+	}
+	
+	public List<Episodio> getEpisodios() {
+		return Collections.unmodifiableList(episodios);
 	}
 
 	@Override

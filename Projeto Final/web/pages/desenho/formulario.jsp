@@ -204,7 +204,7 @@
 							</button>
 						</div>
 
-						<ui id="listaIdiomas" class="list-group">
+						<ul id="listaIdiomas" class="list-group">
 							<c:forEach items="${desenho.idiomas}"
 									   var="idiomaVar">
 								<li class="list-group-item">
@@ -217,14 +217,44 @@
 									</a>
 								</li>
 							</c:forEach>
-						</ui>
+						</ul>
 
 					</div>
 					<div id="episodio"
 						 role="tabpanel"
 						 class="tab-pane fade"
 						 aria-labelledby="episodio-tab">
-						EPISODIO
+
+						<div class="input-group">
+							
+							<span class="input-group-addon lb">Nome</span>
+							<input type="text"
+								   id="episNome"
+								   name="episNome"
+								   class="form-control" />
+							
+							<button id="adicionarEpisodio" 
+									class="btn btn-default btn-group-justified"
+									onclick="return false;">
+								<span class="glyphicon glyphicon-plus"></span>
+							</button>
+						</div>
+
+						<ul id="listaEpisodios" class="list-group">
+							<c:forEach items="${desenho.episodios}"
+									   var="episodioVar">
+								<li class="list-group-item">
+									<span>${episodioVar.nome}</span>
+									<input type="hidden" name="episodioNome" value="${episodioVar.nome}" />
+									<a class="removerEpisodio"
+									   href="#"
+									   title="Remover">
+										<span class="glyphicon glyphicon-trash"></span>
+									</a>
+								</li>
+							</c:forEach>
+						</ul>
+						
 					</div>
 				</div>
 

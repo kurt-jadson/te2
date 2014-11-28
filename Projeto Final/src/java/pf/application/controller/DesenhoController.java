@@ -1,10 +1,10 @@
 package pf.application.controller;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import pf.application.entity.Desenho;
+import pf.application.entity.Episodio;
 import pf.application.entity.Idioma;
 import pf.application.entity.enums.Cor;
 import pf.application.entity.enums.FormatoTela;
@@ -136,7 +136,16 @@ public class DesenhoController extends AbstractController {
 				for (String s : idiomasString) {
 					Idioma idioma = new Idioma();
 					idioma.setId(Integer.valueOf(s));
-					desenho.add(idioma);
+					desenho.addIdioma(idioma);
+				}
+			}
+			
+			String[] episodiosNomeString = ctx.getRequest().getParameterValues("episodioNome");
+			if(episodiosNomeString != null) {
+				for(String s : episodiosNomeString) {
+					Episodio episodio = new Episodio();
+					episodio.setNome(s);
+					desenho.addEpisodio(episodio);
 				}
 			}
 
