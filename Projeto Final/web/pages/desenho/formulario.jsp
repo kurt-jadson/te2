@@ -6,7 +6,10 @@
     <body>
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="glyphicon glyphicon-folder-open">${pageHeaderTitle}</h1>
+				<h1>
+					<span class="glyphicon glyphicon-folder-open"></span>
+					${pageHeaderTitle}
+				</h1>
 			</div>
 
 			<form action="/projetofinal/desenhos/salvar"

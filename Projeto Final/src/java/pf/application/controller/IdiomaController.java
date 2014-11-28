@@ -24,6 +24,7 @@ public class IdiomaController extends AbstractController {
 
 	@Override
 	protected void processRequest(WebContext webContext) throws WebException {
+		webContext.setAttribute("menu", "idiomas");
 		switch (webContext.getAction()) {
 			case "listar":
 				listar(webContext);

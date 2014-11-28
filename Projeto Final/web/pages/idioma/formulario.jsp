@@ -6,7 +6,10 @@
     <body>
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="glyphicon glyphicon-flag">${pageHeaderTitle}</h1>
+				<h1>
+					<span class="glyphicon glyphicon-flag"></span>
+					${pageHeaderTitle}
+				</h1>
 			</div>
 
 			<form action="/projetofinal/idiomas/salvar"

@@ -18,7 +18,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Desenho Store</a>
+			<a class="navbar-brand" href="/projetofinal/acervo">Desenho Store</a>
 		</div>
 
 		<form action="/projetofinal/desenhos/buscar"
@@ -37,14 +37,23 @@
 		<div id="menu"
 			 class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active">
-					<a href="/projetofinal/acervo" class="glyphicon glyphicon-folder-open">Acervo</a>
+				<li class="${menu eq 'acervo' ? 'active' : ''}">
+					<a href="/projetofinal/acervo">
+						<span class="glyphicon glyphicon-folder-open"></span>
+						Acervo
+					</a>
+				</li>
+				<li class="${menu eq 'idiomas' ? 'active' : ''}">
+					<a href="/projetofinal/idiomas/listar">
+						<span class="glyphicon glyphicon-flag"></span>
+						Idiomas
+					</a>
 				</li>
 				<li>
-					<a href="/projetofinal/idiomas/listar" class="glyphicon glyphicon-flag">Idiomas</a>
-				</li>
-				<li>
-					<a href="/projetofinal/logout" class="glyphicon glyphicon-off">Sair</a>
+					<a href="/projetofinal/logout">
+						<span class="glyphicon glyphicon-off"></span>
+						Sair
+					</a>
 				</li>
 			</ul>
 		</div>

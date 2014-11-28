@@ -32,6 +32,7 @@ public class DesenhoController extends AbstractController {
 
 	@Override
 	protected void processRequest(WebContext context) throws WebException {
+		context.setAttribute("menu", "acervo");
 		switch (context.getAction()) {
 			case "listar":
 				listar(context);

@@ -12,7 +12,10 @@
     <body>
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1 class="glyphicon glyphicon-folder-open">${pageHeaderTitle}</h1>
+				<h1>
+					<span class="glyphicon glyphicon-folder-open"></span>
+					${pageHeaderTitle}
+				</h1>
 			</div>
 			<ul class="nav nav-pills">
 				<li role="presentation"><a href="/projetofinal/desenhos/novo">Novo</a></li>
