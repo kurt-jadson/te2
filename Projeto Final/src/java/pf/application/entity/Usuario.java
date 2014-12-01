@@ -10,6 +10,10 @@ import pf.framework.web.User;
  */
 public class Usuario implements Entity, User {
 
+	public static final String[] TODOS = new String[] {
+		"id", "username", "password"
+	};
+	
 	private Integer id;
 	private String username;
 	private String password;

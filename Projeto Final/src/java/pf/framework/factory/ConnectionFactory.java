@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import pf.framework.model.DBConnection;
+import pf.framework.model.ORM;
 
 public class ConnectionFactory {
 
@@ -15,8 +17,9 @@ public class ConnectionFactory {
     public static Connection getConnection() {
         Connection c = null;
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
-            c = DriverManager.getConnection(URL, USER, PASSWORD);
+			DBConnection connection = ORM.getInstance().getConnection();
+            Class.forName(connection.getDriverName());
+            c = DriverManager.getConnection(connection.getUrl(), connection.getUser(), connection.getPass());
         } catch(Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

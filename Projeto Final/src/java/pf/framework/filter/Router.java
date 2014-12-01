@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import pf.framework.controller.ApplicationConstants;
 import pf.framework.exception.UnforwardException;
 import pf.framework.factory.ConnectionFactory;
+import pf.framework.model.ORMManager;
 import pf.framework.web.URLHandler;
 import pf.framework.web.WebContext;
 
@@ -27,11 +28,13 @@ public class Router implements Filter {
 
 	private static final Logger logger = Logger.getLogger(Router.class.getName());
 	private URLHandler urlHandler;
+	private ORMManager ormManager;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		try {
 			urlHandler = new URLHandler(filterConfig.getServletContext());
+			ormManager = new ORMManager(filterConfig.getServletContext());
 		} catch(Exception ex) {
 			throw new ServletException(ex.getMessage());
 		}

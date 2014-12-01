@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence>
+	
+	<unit>
+		<drivername value="org.hsqldb.jdbcDriver" />
+		<connection-url value="jdbc:hsqldb:hsql://localhost/data" />
+		<username value="sa" />
+		<password value="" />
+	</unit>
+	
+	<entity class="pf.application.entity.Usuario"
+			table="usuario">
+		<field name="id" type="INTEGER" />
+		<field name="username" type="STRING" />
+		<field name="password" type="STRING" />
+	</entity>
+	
+	<entity class="pf.application.entity.Desenho"
+			table="desenho">
+		<field name="id" type="INTEGER" />
+		<field name="titulo" type="STRING" />
+		<field name="volume" type="INTEGER" />
+		<field name="tempo" type="INTEGER" />
+		<field name="cor" type="pf.application.entity.enums.Cor" />
+		<field name="anoLancamento" type="INTEGER" />
+		<field name="recomendacao" type="pf.application.entity.enums.Recomendacao" />
+		<field name="regiaoDvd" type="INTEGER" />
+		<field name="legenda" type="pf.application.entity.enums.Legenda" />
+		<field name="formatoTela" type="pf.application.entity.enums.FormatoTela" />
+		<field name="paisOrigem" type="pf.application.entity.enums.Pais" />
+		<field name="descricao" type="STRING" />
+		<field name="preco" type="BIG_DECIMAL" />
+	</entity>
+	
+	<entity class="pf.application.entity.Idioma"
+			table="idioma">
+		<field name="id" type="INTEGER" />
+		<field name="nome" type="STRING" />
+		<field name="sistemaSom" type="pf.application.entity.enums.SistemaSom" />
+	</entity>
+	
+	<entity class="pf.application.entity.DesenhoIdioma"
+			table="desenho_idioma">
+		<field name="desenho" column="desenho_id" type="INTEGER" />
+		<field name="idioma" column="idioma_id" type="INTEGER" />
+	</entity>
+	
+	<entity class="pf.application.entity.DesenhoEpisodio"
+			table="desenho_episodio">
+		<field name="id" type="INTEGER" />
+		<field name="nome" type="STRING" />
+		<field name="desenho" column="desenho_id" type="INTEGER" />
+	</entity>
+	
+</persistence>

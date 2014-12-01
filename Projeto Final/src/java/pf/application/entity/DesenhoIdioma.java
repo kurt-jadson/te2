@@ -11,10 +11,6 @@ public class DesenhoIdioma implements Entity {
 	
 	private Integer desenho;
 	private Integer idioma;
-	
-	//Framework DAO
-	private Integer desenho_id;
-	private Integer idioma_id;
 
 	public DesenhoIdioma() {
 	}
@@ -30,9 +26,6 @@ public class DesenhoIdioma implements Entity {
 	}
 
 	public Integer getDesenho() {
-		if(desenho == null) {
-			desenho = desenho_id;
-		}
 		return desenho;
 	}
 
@@ -41,9 +34,6 @@ public class DesenhoIdioma implements Entity {
 	}
 
 	public Integer getIdioma() {
-		if(idioma == null) {
-			idioma = idioma_id;
-		}
 		return idioma;
 	}
 

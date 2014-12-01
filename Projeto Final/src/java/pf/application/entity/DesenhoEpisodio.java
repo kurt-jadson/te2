@@ -9,13 +9,17 @@ import pf.framework.model.Entity;
  */
 public class DesenhoEpisodio implements Entity {
 	
+	public static final String[] TODOS = new String[] {
+		"id", "nome", "desenho"
+	};
+	
 	private Integer id;
 	private String nome;
 	private Integer desenho;
-	
-	//Framework DAO
-	private Integer desenho_id;
 
+	public DesenhoEpisodio() {
+	}
+	
 	@Override
 	public boolean isNew() {
 		return id == null;
@@ -38,9 +42,6 @@ public class DesenhoEpisodio implements Entity {
 	}
 
 	public Integer getDesenho() {
-		if(desenho == null) {
-			desenho = desenho_id;
-		}
 		return desenho;
 	}
 

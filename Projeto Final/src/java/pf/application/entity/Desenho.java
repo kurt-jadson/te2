@@ -18,6 +18,16 @@ import pf.framework.model.Entity;
  */
 public class Desenho implements Entity {
 
+	public static final String[] TODOS = new String[]{
+		"id", "titulo", "volume", "tempo", "cor", "anoLancamento", "recomendacao",
+		"regiaoDvd", "legenda", "formatoTela", "paisOrigem", "descricao", "preco"
+	};
+
+	public static final String[] TODOS_SEM_ID = new String[]{
+		"titulo", "volume", "tempo", "cor", "anoLancamento", "recomendacao",
+		"regiaoDvd", "legenda", "formatoTela", "paisOrigem", "descricao", "preco"
+	};
+
 	private Integer id;
 	private String titulo;
 	private Integer volume;
@@ -155,11 +165,11 @@ public class Desenho implements Entity {
 	public void addIdioma(Idioma idioma) {
 		idiomas.add(idioma);
 	}
-	
+
 	public void addAllEpisodios(List<Episodio> episodios) {
 		this.episodios.addAll(episodios);
 	}
-	
+
 	public void addEpisodio(Episodio episodio) {
 		episodios.add(episodio);
 	}
@@ -167,7 +177,7 @@ public class Desenho implements Entity {
 	public List<Idioma> getIdiomas() {
 		return Collections.unmodifiableList(idiomas);
 	}
-	
+
 	public List<Episodio> getEpisodios() {
 		return Collections.unmodifiableList(episodios);
 	}

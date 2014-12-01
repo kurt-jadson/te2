@@ -4,61 +4,25 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import pf.application.entity.Desenho;
 import pf.application.entity.DesenhoEpisodio;
 import pf.application.entity.DesenhoIdioma;
 import pf.application.entity.Episodio;
 import pf.application.entity.Idioma;
-import pf.application.entity.enums.Cor;
-import pf.application.entity.enums.FormatoTela;
-import pf.application.entity.enums.Legenda;
-import pf.application.entity.enums.Pais;
-import pf.application.entity.enums.Recomendacao;
-import pf.application.entity.enums.SistemaSom;
 import pf.framework.model.DAO;
-import pf.framework.model.EnumField;
-import pf.framework.model.Field;
-import pf.framework.model.FieldType;
 
 /**
  *
  * @author kurt
  */
 public class DesenhoRepositorio {
-
-	private static final Logger logger = Logger.getLogger(DesenhoRepositorio.class.getName());
-
+	
 	private final Connection connection;
-	private static final String DESENHO = "DESENHO";
-	private static final Field ID = new Field("ID", FieldType.INTEGER);
-	private static final Field TITULO = new Field("TITULO", FieldType.STRING);
-	private static final Field VOLUME = new Field("VOLUME", FieldType.INTEGER);
-	private static final Field TEMPO = new Field("TEMPO", FieldType.INTEGER);
-	private static final Field COR = new EnumField("COR", Cor.class);
-	private static final Field ANO_LANCAMENTO = new Field("ANOLANCAMENTO", FieldType.INTEGER);
-	private static final Field RECOMENDACAO = new EnumField("RECOMENDACAO", Recomendacao.class);
-	private static final Field REGIAO_DVD = new Field("REGIAODVD", FieldType.INTEGER);
-	private static final Field LEGENDA = new EnumField("LEGENDA", Legenda.class);
-	private static final Field FORMATO_TELA = new EnumField("FORMATOTELA", FormatoTela.class);
-	private static final Field PAIS_ORIGEM = new EnumField("PAISORIGEM", Pais.class);
-	private static final Field DESCRICAO = new Field("DESCRICAO", FieldType.STRING);
-	private static final Field PRECO = new Field("PRECO", FieldType.BIG_DECIMAL);
 
-	private static final String DESENHO_IDIOMA = "DESENHO_IDIOMA";
-	private static final Field DESENHO_ID = new Field("DESENHO_ID", FieldType.INTEGER);
-	private static final Field IDIOMA_ID = new Field("IDIOMA_ID", FieldType.INTEGER);
-	
-	private static final String IDIOMA = "IDIOMA";
-	private static final Field NOME = new Field("NOME", FieldType.STRING);
-	private static final Field SISTEMA_SOM = new EnumField("SISTEMASOM", SistemaSom.class);
-	
-	private static final String DESENHO_EPISODIO = "DESENHO_EPISODIO";
-	
 	public DesenhoRepositorio(Connection connection) {
 		this.connection = connection;
 	}
-
+	
 	public void salvar(Desenho desenho) throws Exception {
 		connection.setAutoCommit(false);
 		desenho = salvarDesenho(desenho);
@@ -67,69 +31,68 @@ public class DesenhoRepositorio {
 		connection.commit();
 	}
 
-	private Desenho salvarDesenho(Desenho desenho) throws Exception {
-		DAO dao = DAO.createInsertOrUpdate(desenho, DESENHO);
-		dao.fields(todosSemId());
-		dao.values(desenho.getTitulo(),
-				desenho.getVolume(),
-				desenho.getTempo(),
-				desenho.getCor(),
-				desenho.getAnoLancamento(),
-				desenho.getRecomendacao(),
-				desenho.getRegiaoDvd(),
-				desenho.getLegenda(),
-				desenho.getFormatoTela(),
-				desenho.getPaisOrigem(),
-				desenho.getDescricao(),
-				desenho.getPreco());
-
-		if (!desenho.isNew()) {
-			dao.whereEquals(ID, desenho.getId());
-		}
-
-		dao.execute(connection);
-
-		if (desenho.isNew()) {
-			Desenho persistido = DAO.selectMax(DESENHO, ID)
-					.fields(ID)
-					.getSingleResult(connection, Desenho.class);
-			desenho.setId(persistido.getId());
-		}
-
-		return desenho;
-	}
-
 	private void salvarIdiomas(Desenho desenho) throws Exception {
-		DAO.delete(DESENHO_IDIOMA).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
+		DAO.delete(DesenhoIdioma.class).whereEquals("desenho", desenho.getId()).execute(connection);
 		for (Idioma idioma : desenho.getIdiomas()) {
-			DAO.insert(DESENHO_IDIOMA)
-					.fields(DESENHO_ID, IDIOMA_ID)
-					.values(desenho.getId(), idioma.getId())
+			DesenhoIdioma desenhoIdioma = new DesenhoIdioma(desenho.getId(), idioma.getId());
+			DAO.insert(desenhoIdioma)
+					.fields("desenho", "idioma")
 					.execute(connection);
 		}
 	}
 	
 	private void salvarEpisodios(Desenho desenho) throws Exception {
-		DAO.delete(DESENHO_EPISODIO).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
+		DAO.delete(DesenhoEpisodio.class).whereEquals("desenho", desenho.getId()).execute(connection);
 		for(Episodio episodio : desenho.getEpisodios()) {
-			DAO.insert(DESENHO_EPISODIO)
-					.fields(NOME, DESENHO_ID)
-					.values(episodio.getNome(), desenho.getId())
+			DesenhoEpisodio desenhoEpisodio = new DesenhoEpisodio();
+			desenhoEpisodio.setDesenho(desenho.getId());
+			desenhoEpisodio.setNome(episodio.getNome());
+			
+			DAO.insert(desenhoEpisodio)
+					.fields("nome", "desenho")
 					.execute(connection);
 		}
 	}
+	
+	private Desenho salvarDesenho(Desenho desenho) throws Exception {
+		DAO dao = DAO.createInsertOrUpdate(desenho);
+		dao.fields(Desenho.TODOS_SEM_ID);
 
-	public List<Desenho> buscarAcervo() throws Exception {
-		return DAO.select(DESENHO)
-				.fields(todos())
-				.getResult(connection, Desenho.class);
+		if (!desenho.isNew()) {
+			dao.whereEquals("id", desenho.getId());
+		}
+
+		dao.execute(connection);
+
+		if (desenho.isNew()) {
+			Desenho persistido = DAO.selectMax(Desenho.class, "id")
+					.fields("id")
+					.getSingleResult(connection);
+			desenho.setId(persistido.getId());
+		}
+
+		return desenho;
 	}
-
+	
+	public void remover(Desenho desenho) throws Exception {
+		connection.setAutoCommit(false);
+		DAO.delete(DesenhoIdioma.class).whereEquals("desenho", desenho.getId()).execute(connection);
+		DAO.delete(DesenhoEpisodio.class).whereEquals("desenho", desenho.getId()).execute(connection);
+		DAO.delete(Desenho.class).whereEquals("id", desenho.getId()).execute(connection);
+		connection.commit();
+	}
+	
+	public List<Desenho> buscarAcervo() throws Exception {
+		return DAO.select(Desenho.class)
+				.fields(Desenho.TODOS)
+				.getResult(connection);
+	}
+	
 	public Desenho buscarPorId(Integer id) throws Exception {
-		return DAO.select(DESENHO)
-				.fields(todos())
-				.whereEquals(ID, id)
-				.getSingleResult(connection, Desenho.class);
+		return DAO.select(Desenho.class)
+				.fields(Desenho.TODOS)
+				.whereEquals("id", id)
+				.getSingleResult(connection);
 	}
 	
 	public Desenho buscarPorIdFetchListas(Integer id) throws Exception {
@@ -139,11 +102,18 @@ public class DesenhoRepositorio {
 		return desenho;
 	}
 	
+	public List<Desenho> buscarPorTitulo(String titulo) throws Exception {
+		return DAO.select(Desenho.class)
+				.fields(Desenho.TODOS)
+				.whereLike("titulo", "%" + titulo + "%")
+				.getResult(connection);
+	}
+	
 	private List<Idioma> buscarIdiomas(Desenho desenho) throws Exception {
-		List<DesenhoIdioma> idiomas = DAO.select(DESENHO_IDIOMA)
-				.fields(DESENHO_ID, IDIOMA_ID)
-				.whereEquals(DESENHO_ID, desenho.getId())
-				.getResult(connection, DesenhoIdioma.class);
+		List<DesenhoIdioma> idiomas = DAO.select(DesenhoIdioma.class)
+				.fields("desenho", "idioma")
+				.whereEquals("desenho", desenho.getId())
+				.getResult(connection);
 		
 		if(idiomas.isEmpty()) {
 			return Collections.EMPTY_LIST;
@@ -154,17 +124,17 @@ public class DesenhoRepositorio {
 			idiomasIds[i] = idiomas.get(i).getIdioma();
 		}
 		
-		return DAO.select(IDIOMA)
-				.fields(ID, NOME, SISTEMA_SOM)
-				.whereIn(ID, idiomasIds)
-				.getResult(connection, Idioma.class);
+		return DAO.select(Idioma.class)
+				.fields(Idioma.TODOS)
+				.whereIn("id", idiomasIds)
+				.getResult(connection);
 	}
-	
+		
 	private List<Episodio> buscarEpisodios(Desenho desenho) throws Exception {
-		List<DesenhoEpisodio> desenhoEpisodios = DAO.select(DESENHO_EPISODIO)
-				.fields(ID, NOME, DESENHO_ID)
-				.whereEquals(DESENHO_ID, desenho.getId())
-				.getResult(connection, DesenhoEpisodio.class);
+		List<DesenhoEpisodio> desenhoEpisodios = DAO.select(DesenhoEpisodio.class)
+				.fields(DesenhoEpisodio.TODOS)
+				.whereEquals("desenho", desenho.getId())
+				.getResult(connection);
 		
 		if(desenhoEpisodios.isEmpty()) {
 			return Collections.EMPTY_LIST;
@@ -180,30 +150,5 @@ public class DesenhoRepositorio {
 		
 		return episodios;
 	}
-
-	public List<Desenho> buscarPorTitulo(String titulo) throws Exception {
-		return DAO.select(DESENHO)
-				.fields(todos())
-				.whereLike(TITULO, "%" + titulo + "%")
-				.getResult(connection, Desenho.class);
-	}
-
-	public void remover(Desenho desenho) throws Exception {
-		connection.setAutoCommit(false);
-		DAO.delete(DESENHO_IDIOMA).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
-		DAO.delete(DESENHO_EPISODIO).whereEquals(DESENHO_ID, desenho.getId()).execute(connection);
-		DAO.delete(DESENHO).whereEquals(ID, desenho.getId()).execute(connection);
-		connection.commit();
-	}
-
-	public Field[] todosSemId() {
-		return new Field[]{TITULO, VOLUME, TEMPO, COR, ANO_LANCAMENTO, RECOMENDACAO,
-			REGIAO_DVD, LEGENDA, FORMATO_TELA, PAIS_ORIGEM, DESCRICAO, PRECO};
-	}
-
-	public Field[] todos() {
-		return new Field[]{ID, TITULO, VOLUME, TEMPO, COR, ANO_LANCAMENTO, RECOMENDACAO,
-			REGIAO_DVD, LEGENDA, FORMATO_TELA, PAIS_ORIGEM, DESCRICAO, PRECO};
-	}
-
+		
 }

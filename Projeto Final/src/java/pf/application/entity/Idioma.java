@@ -9,6 +9,14 @@ import pf.framework.model.Entity;
  */
 public class Idioma implements Entity {
 
+	public static final String[] TODOS = new String[] {
+		"id", "nome", "sistemaSom"
+	};
+	
+	public static final String[] TODOS_SEM_ID = new String[] {
+		"nome", "sistemaSom"
+	};
+	
 	private Integer id;
 	private String nome;
 	private SistemaSom sistemaSom;
